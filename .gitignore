@@ -5,6 +5,8 @@ build/
 # Ignore Visual Studio Code specific files
 .vscode/
 
+logs.txt
+
 # Ignore compiled binaries and libraries
 *.exe
 *.dll

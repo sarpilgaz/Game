@@ -1,2 +1,0 @@
-[2024-05-16 14:04:13]DEBUG: hey do you work??
-[2024-05-16 14:04:15]DEBUG: BYE BYE

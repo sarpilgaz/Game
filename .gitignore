@@ -1,0 +1,17 @@
+# Ignore build directories
+bin/
+build/
+
+# Ignore Visual Studio Code specific files
+.vscode/
+
+# Ignore compiled binaries and libraries
+*.exe
+*.dll
+*.so
+*.dylib
+
+# Ignore CMake generated files
+CMakeFiles/
+CMakeCache.txt
+CMakeScripts/

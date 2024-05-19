@@ -2,6 +2,9 @@
 #define GAME_H
 
 #include <SDL2/SDL.h>
+#include "Logger.h"
+#include "Renderer.h"
+#include "InputHandler.h"
 
 class Game {
 public:
@@ -9,16 +12,19 @@ public:
     ~Game();
 
     bool init();
+    void run();
     void handleEvents();
     void update();
     void render();
     void clean();
-    bool isRunning();
 
 private:
-    SDL_Window *window;
-    SDL_Renderer *renderer;
     bool running;
+    SDL_Window* window;
+    SDL_Renderer* renderer;
+    Logger logger;
+    Renderer gameRenderer;
+    InputHandler inputHandler;
 };
 
-#endif // GAME_H
+#endif

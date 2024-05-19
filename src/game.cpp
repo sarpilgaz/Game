@@ -1,15 +1,10 @@
 #include "Game.h"
-#include "Logger.h"
 
-Logger logger("logs.txt");
+Game::Game() : running(false), window(nullptr), renderer(nullptr), logger("logs.txt") {}
 
-Game::Game() {
-    window = nullptr;
-    renderer = nullptr;
-    running = false;
+Game::~Game() {
+    clean();
 }
-
-Game::~Game() {}
 
 bool Game::init() {
     if (SDL_Init(SDL_INIT_VIDEO) != 0) {
@@ -22,7 +17,6 @@ bool Game::init() {
         SDL_Log("Unable to create window: %s", SDL_GetError());
         return false;
     }
-    logger.log(DEBUG, "hey do you work??");
 
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
     if (renderer == nullptr) {
@@ -30,38 +24,33 @@ bool Game::init() {
         return false;
     }
 
+    gameRenderer.setRenderer(renderer);
     running = true;
     return true;
 }
 
-void Game::handleEvents() {
-    SDL_Event event;
-    if (SDL_PollEvent(&event)) {
-        if (event.type == SDL_QUIT) {
-            running = false;
-        }
+void Game::run() {
+    while (running) {
+        handleEvents();
+        update();
+        render();
     }
 }
 
-void Game::update() {}
+void Game::handleEvents() {
+    inputHandler.handleEvents(running);
+}
+
+void Game::update() {
+    // Update game logic here
+}
 
 void Game::render() {
-    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-    SDL_RenderClear(renderer);
-
-    // Render here
-
-    SDL_RenderPresent(renderer);
+    gameRenderer.render();
 }
 
 void Game::clean() {
-    logger.log(DEBUG, "BYE BYE");
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
-    logger.~Logger();
     SDL_Quit();
-}
-
-bool Game::isRunning() {
-    return running;
 }

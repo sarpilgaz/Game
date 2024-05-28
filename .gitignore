@@ -2,6 +2,9 @@
 bin/
 build/
 
+#Ignore the entire SDL2 and SDL2 setup
+SDL2/
+
 # Ignore Visual Studio Code specific files
 .vscode/
 

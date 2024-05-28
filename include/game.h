@@ -5,7 +5,7 @@
 #include "Logger.h"
 #include "Renderer.h"
 #include "InputHandler.h"
-
+#include "Player.h"
 class Game {
 public:
     Game();
@@ -25,6 +25,7 @@ private:
     Logger logger;
     Renderer gameRenderer;
     InputHandler inputHandler;
+    Player player;
 };
 
 #endif

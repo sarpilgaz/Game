@@ -7,7 +7,7 @@ Game::~Game() {
 }
 
 bool Game::init() {
-    if (SDL_Init(SDL_INIT_VIDEO) != 0) {
+    if (SDL_Init(SDL_INIT_EVERYTHING) != 0) {
         SDL_Log("Unable to initialize SDL: %s", SDL_GetError());
         return false;
     }
@@ -25,6 +25,7 @@ bool Game::init() {
     }
 
     gameRenderer.setRenderer(renderer);
+
     running = true;
     return true;
 }

@@ -43,6 +43,8 @@ void Game::handleEvents() {
 }
 
 void Game::update() {
+    int a;
+    a++;
     // Update game logic here
 }
 

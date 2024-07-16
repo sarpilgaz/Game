@@ -13,8 +13,7 @@ public:
     void setHealth(int newHealth) { health = newHealth; }
 
 private:
-    
-    int width, height;
+
     int health;
 };
 

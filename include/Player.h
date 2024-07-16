@@ -7,12 +7,13 @@
 class Player : public Entity {
 public:
     Player();
+    SDL_Rect playerCharacter;
 
     int getHealth() const { return health; }
     void setHealth(int newHealth) { health = newHealth; }
 
 private:
-    SDL_Rect playerCharacter;
+    
     int width, height;
     int health;
 };

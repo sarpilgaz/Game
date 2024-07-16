@@ -3,10 +3,12 @@
 
 #include <SDL2/SDL.h>
 
+class Player; //forward dec.
+
 class Renderer {
 public:
     void setRenderer(SDL_Renderer* renderer);
-    void render();
+    void render(const Player& player);
 
 private:
     SDL_Renderer* renderer;

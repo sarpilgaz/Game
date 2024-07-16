@@ -26,6 +26,10 @@ bool Game::init() {
 
     gameRenderer.setRenderer(renderer);
 
+    SDL_Surface* tmpSurface = IMG_Load("assets/sprites/Sprite-0001.png");
+    player.setTex(SDL_CreateTextureFromSurface(renderer, tmpSurface));
+    SDL_FreeSurface(tmpSurface);
+
     running = true;
     return true;
 }
@@ -43,13 +47,11 @@ void Game::handleEvents() {
 }
 
 void Game::update() {
-    int a;
-    a++;
     // Update game logic here
 }
 
 void Game::render() {
-    gameRenderer.render();
+    gameRenderer.render(player);
 }
 
 void Game::clean() {

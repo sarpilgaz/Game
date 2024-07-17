@@ -31,7 +31,7 @@ clean:
 
 # Run target (optional, if you want to run the built executable)
 run: build
-	./bin/$(CMAKE_BUILD_TYPE)/$(PROJECT_NAME)
+	./bin/$(PROJECT_NAME)
 
 # Specify phony targets
 .PHONY: all configure build clean run

@@ -6,6 +6,6 @@ For default (debug) compilation: `make`
 
 For Release: `make CONFIG=Release`
 
-to run:
+to run: `make run`
 
-`make run` or `make run CONFIG=RELEASE`
+to clean build files: `make clean`

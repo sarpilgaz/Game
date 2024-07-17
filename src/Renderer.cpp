@@ -9,7 +9,7 @@ void Renderer::render(const Player& player) {
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
     SDL_RenderClear(renderer);
 
-    // Render game objects here
-    SDL_RenderCopy(renderer, player.getTex(), NULL, &player.playerCharacter);
+    //SDL_RenderCopy(renderer, player.getTex(), NULL, &player.playerCharacter);
+    SDL_RenderCopyEx(renderer, player.getTex(), NULL, &player.playerCharacter, player.angle * (180.0 / M_PI), nullptr, SDL_FLIP_NONE);
     SDL_RenderPresent(renderer);
 }

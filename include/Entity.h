@@ -5,7 +5,7 @@
 
 class Entity {
 protected:
-    int vx, vy;
+    float vx, vy;
 
 public:
     Entity() : vx(0), vy(0) {}
@@ -19,8 +19,8 @@ public:
     void setVx(int newVx) { vx = newVx; }
     void setVy(int newVy) { vy = newVy; }
     void setTex(SDL_Texture* tex) { entityTex = tex; }
-    void updateVx(int amount);
-    void updateVy(int amount);
+    void updateVx(float amount);
+    void updateVy(float amount);
 };
 
 #endif // ENTITY_H

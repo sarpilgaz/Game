@@ -61,22 +61,22 @@ void Game::handleEvents() {
 void Game::update() {
     if (keyStates[InputHandler::D]) {
         if (player.getVx() < 3) {
-            player.updateVx(1);
+            player.updateVx(1.0f);
         }
     }
     if (keyStates[InputHandler::A]) {
         if (player.getVx() > -3) {
-            player.updateVx(-1);
+            player.updateVx(-1.0f);
         }
     }
     if (keyStates[InputHandler::S]) {
         if (player.getVy() < 3) {
-            player.updateVy(1);
+            player.updateVy(1.0f);
         }
     }
     if (keyStates[InputHandler::W]) {
         if (player.getVy() > -3) {
-            player.updateVy(-1);
+            player.updateVy(-1.0f);
         }
     }
 

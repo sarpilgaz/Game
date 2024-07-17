@@ -6,3 +6,8 @@ Player::Player(){
     playerCharacter = {150, 150, 32, 32};
     health = 100;
 }
+
+void Player::updatePos() {
+    playerCharacter.x = playerCharacter.x + vx;
+    playerCharacter.y = playerCharacter.y + vy;
+}

@@ -55,12 +55,32 @@ void Game::run() {
 }
 
 void Game::handleEvents() {
-    inputHandler.handleEvents(running);
+    inputHandler.handleEvents(running, keyStates);
 }
 
 void Game::update() {
-    // Update game logic here
-    player.playerCharacter.x = player.playerCharacter.x + 1;
+    if (keyStates[InputHandler::D]) {
+        if (player.getVx() < 3) {
+            player.updateVx(1);
+        }
+    }
+    if (keyStates[InputHandler::A]) {
+        if (player.getVx() > -3) {
+            player.updateVx(-1);
+        }
+    }
+    if (keyStates[InputHandler::S]) {
+        if (player.getVy() < 3) {
+            player.updateVy(1);
+        }
+    }
+    if (keyStates[InputHandler::W]) {
+        if (player.getVy() > -3) {
+            player.updateVy(-1);
+        }
+    }
+
+    player.updatePos();
 }
 
 void Game::render() {

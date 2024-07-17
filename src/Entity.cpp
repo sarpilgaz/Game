@@ -1,2 +1,9 @@
 #include "Entity.h"
-//empty for now...
+
+void Entity::updateVx(int amount) {
+    vx = vx + amount;
+}
+
+void Entity::updateVy(int amount) {
+    vy = vy + amount;
+}

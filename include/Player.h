@@ -11,6 +11,7 @@ public:
 
     int getHealth() const { return health; }
     void setHealth(int newHealth) { health = newHealth; }
+    void updatePos();
 
 private:
 

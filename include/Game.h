@@ -3,6 +3,7 @@
 
 #include <SDL2/SDL.h>
 #include <SDL_image.h>
+#include <unordered_map>
 #include "Logger.h"
 #include "Renderer.h"
 #include "InputHandler.h"
@@ -11,6 +12,12 @@ class Game {
 public:
     Game();
     ~Game();
+    std::unordered_map<InputHandler::Keys, bool> keyStates = {
+        {InputHandler::W, false},
+        {InputHandler::A, false},
+        {InputHandler::S, false},
+        {InputHandler::D, false}
+    };
 
     bool init();
     void run();

@@ -2,6 +2,11 @@
 
 Game::Game() : running(false), window(nullptr), renderer(nullptr), logger("logs.txt") {}
 
+const int FPS = 60;
+const int frameDelay = 1000 / FPS;
+Uint32 frameStart;
+int frameTime;
+
 Game::~Game() {
     clean();
 }
@@ -36,9 +41,16 @@ bool Game::init() {
 
 void Game::run() {
     while (running) {
+        frameStart = SDL_GetTicks();
+
         handleEvents();
         update();
         render();
+
+        frameTime = SDL_GetTicks() - frameStart;
+        if (frameDelay > frameTime) {
+            SDL_Delay(frameDelay - frameTime);
+        } 
     }
 }
 
@@ -48,6 +60,7 @@ void Game::handleEvents() {
 
 void Game::update() {
     // Update game logic here
+    player.playerCharacter.x = player.playerCharacter.x + 1;
 }
 
 void Game::render() {

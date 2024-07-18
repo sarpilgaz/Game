@@ -17,7 +17,7 @@ public:
 
 private:
     int health;
-    const float SHIP_LENGTH = 32;
+    const float SHIP_LENGTH = 16.0f;
 };
 
 #endif // PLAYER_H

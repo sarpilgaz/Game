@@ -91,23 +91,32 @@ void Game::update() {
     player.getTipCoord(tipX, tipY);
 
     if (keyStates[InputHandler::Z]) {
-        if (notUsed.size() == 0) {
-            Bullet b(tipX, tipY);
+        float bulletVx = Bullet::BULLET_SPEED * cos(player.angle - M_PI_2);
+        float bulletVy = Bullet::BULLET_SPEED * sin(player.angle - M_PI_2); 
+        if (notUsed.empty()) {
+            Bullet b(tipX, tipY, bulletVx, bulletVy);
             used.push_back(b);
         }
-        else if (notUsed.size() > 0) {
+        else {
             Bullet b = notUsed.back();
             notUsed.pop_back();
-            b.bulletRect.x = tipX;
-            b.bulletRect.y = tipY;
+            b.bulletRect.x = static_cast<int>(tipX);
+            b.bulletRect.y = static_cast<int>(tipY);
             used.push_back(b);
         }
     }
 
     for (auto& b : used) {
-        b.updatePos(player.getVx(), player.getVy());
+        b.updatePos();
     }
 
+    for (int i = 0; i < used.size(); i++) {
+        if (used[i].bulletRect.x > 800 || used[i].bulletRect.y > 600) {
+            Bullet b = used[i];
+            used.erase(std::next(used.begin(), i));
+            notUsed.push_back(b);
+        }
+    }
 }
 
 void Game::render() {

@@ -7,9 +7,12 @@
 class Bullet: public Entity {
 
 public:
-    Bullet(float x, float y);
+    Bullet(float x, float y, float vx, float vy);
     SDL_Rect bulletRect;
-    void updatePos(float playerVx, float playervy);
+    static constexpr float BULLET_SPEED = 6.0f;
+
+
+    void updatePos();
 
 
 

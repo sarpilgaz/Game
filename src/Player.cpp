@@ -30,6 +30,13 @@ void Player::updatePos() {
 }
 
 void Player::getTipCoord(float& x, float& y) {
-    x = playerCharacter.x + SHIP_LENGTH * cos (angle - M_PI_2);
-    y = playerCharacter.y + SHIP_LENGTH * sin (angle - M_PI_2);
+    // Center of the ship
+    float centerX = playerCharacter.x + playerCharacter.w / 2;
+    float centerY = playerCharacter.y + playerCharacter.h / 2;
+
+    const float OFFSET = 5.0f;
+
+    // Calculate the tip coordinates using the center as the origin
+    x = centerX + (SHIP_LENGTH + OFFSET) * cos(angle - M_PI_2) - 4;
+    y = centerY + (SHIP_LENGTH + OFFSET) * sin(angle - M_PI_2) - 4;
 }

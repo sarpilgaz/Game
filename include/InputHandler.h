@@ -10,7 +10,8 @@ public:
         W,
         A,
         S,
-        D
+        D,
+        Z
     };
     void handleEvents(bool& running, std::unordered_map<Keys, bool>& keystates);
 

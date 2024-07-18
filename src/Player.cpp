@@ -14,7 +14,7 @@ void Player::updatePos() {
     playerCharacter.y = playerCharacter.y + vy;
 
     float targetAngle = atan2(vy, vx) + M_PI_2;
-    float rotationSpeed = 0.1f;
+    float rotationSpeed = 0.08f;
     float deltaAngle = targetAngle - angle;
     if (deltaAngle > M_PI) deltaAngle -= 2 * M_PI;
     if (deltaAngle < -M_PI) deltaAngle += 2 * M_PI;
@@ -27,4 +27,9 @@ void Player::updatePos() {
         angle -= 2 * M_PI;
     }
 
+}
+
+void Player::getTipCoord(float& x, float& y) {
+    x = playerCharacter.x + SHIP_LENGTH * cos (angle - M_PI_2);
+    y = playerCharacter.y + SHIP_LENGTH * sin (angle - M_PI_2);
 }

@@ -13,9 +13,11 @@ public:
     int getHealth() const { return health; }
     void setHealth(int newHealth) { health = newHealth; }
     void updatePos();
+    void getTipCoord(float& x, float& y);
 
 private:
     int health;
+    const float SHIP_LENGTH = 32;
 };
 
 #endif // PLAYER_H

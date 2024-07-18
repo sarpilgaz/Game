@@ -58,33 +58,60 @@ void Game::handleEvents() {
     inputHandler.handleEvents(running, keyStates);
 }
 
+vector<Bullet> used;
+vector<Bullet> notUsed;
+
 void Game::update() {
+    float tipX;
+    float tipY;
+
+
     if (keyStates[InputHandler::D]) {
         if (player.getVx() < 3) {
-            player.updateVx(1.0f);
+            player.updateVx(0.4f);
         }
     }
     if (keyStates[InputHandler::A]) {
         if (player.getVx() > -3) {
-            player.updateVx(-1.0f);
+            player.updateVx(-0.4f);
         }
     }
     if (keyStates[InputHandler::S]) {
         if (player.getVy() < 3) {
-            player.updateVy(1.0f);
+            player.updateVy(0.4f);
         }
     }
     if (keyStates[InputHandler::W]) {
         if (player.getVy() > -3) {
-            player.updateVy(-1.0f);
+            player.updateVy(-0.4f);
         }
     }
 
     player.updatePos();
+    player.getTipCoord(tipX, tipY);
+
+    if (keyStates[InputHandler::Z]) {
+        if (notUsed.size() == 0) {
+            Bullet b(tipX, tipY);
+            used.push_back(b);
+        }
+        else if (notUsed.size() > 0) {
+            Bullet b = notUsed.back();
+            notUsed.pop_back();
+            b.bulletRect.x = tipX;
+            b.bulletRect.y = tipY;
+            used.push_back(b);
+        }
+    }
+
+    for (auto& b : used) {
+        b.updatePos(player.getVx(), player.getVy());
+    }
+
 }
 
 void Game::render() {
-    gameRenderer.render(player);
+    gameRenderer.render(player, used);
 }
 
 void Game::clean() {

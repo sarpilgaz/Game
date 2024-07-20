@@ -60,6 +60,7 @@ void Game::handleEvents() {
 
 vector<Bullet> used;
 vector<Bullet> notUsed;
+bool bulletShot = false;
 
 void Game::update() {
     float tipX;
@@ -91,19 +92,24 @@ void Game::update() {
     player.getTipCoord(tipX, tipY);
 
     if (keyStates[InputHandler::Z]) {
-        float bulletVx = Bullet::BULLET_SPEED * cos(player.angle - M_PI_2);
-        float bulletVy = Bullet::BULLET_SPEED * sin(player.angle - M_PI_2); 
-        if (notUsed.empty()) {
-            Bullet b(tipX, tipY, bulletVx, bulletVy);
-            used.push_back(b);
-        }
-        else {
-            Bullet b = notUsed.back();
-            notUsed.pop_back();
-            b.bulletRect.x = static_cast<int>(tipX);
-            b.bulletRect.y = static_cast<int>(tipY);
-            used.push_back(b);
-        }
+        if (!bulletShot) {
+            float bulletVx = Bullet::BULLET_SPEED * cos(player.angle - M_PI_2);
+            float bulletVy = Bullet::BULLET_SPEED * sin(player.angle - M_PI_2); 
+            if (notUsed.empty()) {
+                Bullet b(tipX, tipY, bulletVx, bulletVy);
+                used.push_back(b);
+            }
+            else {
+                Bullet b = notUsed.back();
+                notUsed.pop_back();
+                b.bulletRect.x = static_cast<int>(tipX);
+                b.bulletRect.y = static_cast<int>(tipY);
+                used.push_back(b);
+            }
+        }    
+        bulletShot = true;
+    } else {
+        bulletShot = false;
     }
 
     for (auto& b : used) {

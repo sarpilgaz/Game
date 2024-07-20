@@ -104,6 +104,8 @@ void Game::update() {
                 notUsed.pop_back();
                 b.bulletRect.x = static_cast<int>(tipX);
                 b.bulletRect.y = static_cast<int>(tipY);
+                b.setVx(Bullet::BULLET_SPEED * cos(player.angle - M_PI_2));
+                b.setVy(Bullet::BULLET_SPEED * sin(player.angle - M_PI_2));
                 used.push_back(b);
             }
         }    

@@ -93,8 +93,8 @@ void Game::update() {
 
     if (keyStates[InputHandler::Z]) {
         if (!bulletShot) {
-            float bulletVx = Bullet::BULLET_SPEED * cos(player.angle - M_PI_2);
-            float bulletVy = Bullet::BULLET_SPEED * sin(player.angle - M_PI_2); 
+            float bulletVx = (Bullet::BULLET_SPEED + abs(player.getVx())) * cos(player.angle - M_PI_2);
+            float bulletVy = (Bullet::BULLET_SPEED + abs(player.getVy())) * sin(player.angle - M_PI_2); 
             if (notUsed.empty()) {
                 Bullet b(tipX, tipY, bulletVx, bulletVy);
                 used.push_back(b);
@@ -104,13 +104,14 @@ void Game::update() {
                 notUsed.pop_back();
                 b.bulletRect.x = static_cast<int>(tipX);
                 b.bulletRect.y = static_cast<int>(tipY);
-                b.setVx(Bullet::BULLET_SPEED * cos(player.angle - M_PI_2));
-                b.setVy(Bullet::BULLET_SPEED * sin(player.angle - M_PI_2));
+                b.setVx(bulletVx);
+                b.setVy(bulletVy);
                 used.push_back(b);
             }
         }    
         bulletShot = true;
-    } else {
+    }
+    if (!keyStates[InputHandler::Z]) {
         bulletShot = false;
     }
 

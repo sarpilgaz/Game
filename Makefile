@@ -30,7 +30,7 @@ clean:
 	rm -rf bin/
 
 # Run target (optional, if you want to run the built executable)
-run: build
+run: all
 	./bin/$(PROJECT_NAME)
 
 # Specify phony targets

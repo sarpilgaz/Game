@@ -15,11 +15,11 @@ public:
     Game();
     ~Game();
     std::unordered_map<InputHandler::Keys, bool> keyStates = {
-        {InputHandler::W, false},
+        {InputHandler::UP, false},
+        {InputHandler::LEFT, false},
+        {InputHandler::DOWN, false},
+        {InputHandler::RIGHT, false},
         {InputHandler::A, false},
-        {InputHandler::S, false},
-        {InputHandler::D, false},
-        {InputHandler::Z, false},
     };
 
     bool init();

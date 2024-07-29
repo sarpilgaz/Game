@@ -67,22 +67,22 @@ void Game::update() {
     float tipY;
 
 
-    if (keyStates[InputHandler::D]) {
+    if (keyStates[InputHandler::RIGHT]) {
         if (player.getVx() < 3) {
             player.updateVx(0.4f);
         }
     }
-    if (keyStates[InputHandler::A]) {
+    if (keyStates[InputHandler::LEFT]) {
         if (player.getVx() > -3) {
             player.updateVx(-0.4f);
         }
     }
-    if (keyStates[InputHandler::S]) {
+    if (keyStates[InputHandler::DOWN]) {
         if (player.getVy() < 3) {
             player.updateVy(0.4f);
         }
     }
-    if (keyStates[InputHandler::W]) {
+    if (keyStates[InputHandler::UP]) {
         if (player.getVy() > -3) {
             player.updateVy(-0.4f);
         }
@@ -91,7 +91,7 @@ void Game::update() {
     player.updatePos();
     player.getTipCoord(tipX, tipY);
 
-    if (keyStates[InputHandler::Z]) {
+    if (keyStates[InputHandler::A]) {
         if (!bulletShot) {
             float bulletVx = (Bullet::BULLET_SPEED + abs(player.getVx())) * cos(player.angle - M_PI_2);
             float bulletVy = (Bullet::BULLET_SPEED + abs(player.getVy())) * sin(player.angle - M_PI_2); 
@@ -111,7 +111,7 @@ void Game::update() {
         }    
         bulletShot = true;
     }
-    if (!keyStates[InputHandler::Z]) {
+    if (!keyStates[InputHandler::A]) {
         bulletShot = false;
     }
 

@@ -37,6 +37,6 @@ void Player::getTipCoord(float& x, float& y) {
     const float OFFSET = 5.0f;
 
     // Calculate the tip coordinates using the center as the origin
-    x = centerX + (SHIP_LENGTH + OFFSET) * cos(angle - M_PI_2) - 4;
-    y = centerY + (SHIP_LENGTH + OFFSET) * sin(angle - M_PI_2) - 4;
+    x = centerX + (SHIP_LENGTH + OFFSET) * cos(angle - M_PI_2) - 4; //adjust by half bullet sprite
+    y = centerY + (SHIP_LENGTH + OFFSET) * sin(angle - M_PI_2) - 4; //adjust by half bullet sprite
 }

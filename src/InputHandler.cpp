@@ -9,19 +9,19 @@ void InputHandler::handleEvents(bool& running, std::unordered_map<Keys, bool>& k
             bool isPressed = (event.type == SDL_KEYDOWN);
             switch(event.key.keysym.sym) {
                 case SDLK_UP:
-                    keystates[W] = isPressed;
+                    keystates[UP] = isPressed;
                     break;
                 case SDLK_LEFT:
-                    keystates[A] = isPressed;
+                    keystates[LEFT] = isPressed;
                     break;
                 case SDLK_DOWN:
-                    keystates[S] = isPressed;
+                    keystates[DOWN] = isPressed;
                     break;
                 case SDLK_RIGHT:
-                    keystates[D] = isPressed;
+                    keystates[RIGHT] = isPressed;
                     break;
                 case SDLK_a:
-                    keystates[Z] = isPressed;
+                    keystates[A] = isPressed;
                     break;
             }
         }
@@ -37,10 +37,4 @@ void InputHandler::handleEvents(bool& running, std::unordered_map<Keys, bool>& k
             }
         } */
     }
-        std::cout << "Key states: W=" << keystates[W]
-              << " A=" << keystates[A]
-              << " S=" << keystates[S]
-              << " D=" << keystates[D]
-              << " Z=" << keystates[Z] << std::endl;
-
 }

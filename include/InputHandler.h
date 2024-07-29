@@ -7,11 +7,11 @@
 class InputHandler {
 public:
     enum Keys {
-        W,
-        A,
-        S,
-        D,
-        Z
+        UP,
+        LEFT,
+        DOWN,
+        RIGHT,
+        A
     };
     void handleEvents(bool& running, std::unordered_map<Keys, bool>& keystates);
 

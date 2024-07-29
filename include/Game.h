@@ -10,6 +10,7 @@
 #include "InputHandler.h"
 #include "Player.h"
 #include "Bullet.h"
+#include "Engine.h"
 class Game {
 public:
     Game();
@@ -37,6 +38,7 @@ private:
     Renderer gameRenderer;
     InputHandler inputHandler;
     Player player;
+    Engine engine;
 };
 
 #endif

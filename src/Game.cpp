@@ -7,6 +7,10 @@ const int frameDelay = 1000 / FPS;
 Uint32 frameStart;
 int frameTime;
 
+vector<Bullet> used;
+vector<Bullet> notUsed;
+bool bulletShot = false;
+
 Game::~Game() {
     clean();
 }
@@ -58,74 +62,12 @@ void Game::handleEvents() {
     inputHandler.handleEvents(running, keyStates);
 }
 
-vector<Bullet> used;
-vector<Bullet> notUsed;
-bool bulletShot = false;
-
 void Game::update() {
-    float tipX;
-    float tipY;
+    engine.updatePlayerPosition(keyStates, player);
 
+    engine.handleShooting(keyStates, player, used, notUsed);
 
-    if (keyStates[InputHandler::RIGHT]) {
-        if (player.getVx() < 3) {
-            player.updateVx(0.4f);
-        }
-    }
-    if (keyStates[InputHandler::LEFT]) {
-        if (player.getVx() > -3) {
-            player.updateVx(-0.4f);
-        }
-    }
-    if (keyStates[InputHandler::DOWN]) {
-        if (player.getVy() < 3) {
-            player.updateVy(0.4f);
-        }
-    }
-    if (keyStates[InputHandler::UP]) {
-        if (player.getVy() > -3) {
-            player.updateVy(-0.4f);
-        }
-    }
-
-    player.updatePos();
-    player.getTipCoord(tipX, tipY);
-
-    if (keyStates[InputHandler::A]) {
-        if (!bulletShot) {
-            float bulletVx = (Bullet::BULLET_SPEED + abs(player.getVx())) * cos(player.angle - M_PI_2);
-            float bulletVy = (Bullet::BULLET_SPEED + abs(player.getVy())) * sin(player.angle - M_PI_2); 
-            if (notUsed.empty()) {
-                Bullet b(tipX, tipY, bulletVx, bulletVy);
-                used.push_back(b);
-            }
-            else {
-                Bullet b = notUsed.back();
-                notUsed.pop_back();
-                b.bulletRect.x = static_cast<int>(tipX);
-                b.bulletRect.y = static_cast<int>(tipY);
-                b.setVx(bulletVx);
-                b.setVy(bulletVy);
-                used.push_back(b);
-            }
-        }    
-        bulletShot = true;
-    }
-    if (!keyStates[InputHandler::A]) {
-        bulletShot = false;
-    }
-
-    for (auto& b : used) {
-        b.updatePos();
-    }
-
-    for (int i = 0; i < used.size(); i++) {
-        if (used[i].bulletRect.x > 800 || used[i].bulletRect.y > 600) {
-            Bullet b = used[i];
-            used.erase(std::next(used.begin(), i));
-            notUsed.push_back(b);
-        }
-    }
+    engine.updateBulletPositions(used, notUsed);
 }
 
 void Game::render() {

@@ -1,12 +1,13 @@
 #include "Renderer.h"
 #include "Player.h"
 #include "Bullet.h"
+#include "Astreoid.h"
 
 void Renderer::setRenderer(SDL_Renderer* renderer) {
     this->renderer = renderer;
 }
 
-void Renderer::render(const Player& player, std::vector<Bullet>& activeBullets) {
+void Renderer::render(const Player& player, std::vector<Bullet>& activeBullets, std::vector<Astreoid>& astreoids) {
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
     SDL_RenderClear(renderer);
 
@@ -16,6 +17,10 @@ void Renderer::render(const Player& player, std::vector<Bullet>& activeBullets) 
 
     for (auto b : activeBullets) {
         SDL_RenderDrawRect(renderer, &b.bulletRect);
+    }
+
+    for (auto a : astreoids) {
+        SDL_RenderCopyEx(renderer, a.getTex(), NULL, &a.astreoidRect, a.angle * (180.0 / M_PI), nullptr, SDL_FLIP_NONE);
     }
     SDL_RenderPresent(renderer);
 }

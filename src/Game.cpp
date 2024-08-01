@@ -39,6 +39,8 @@ bool Game::init() {
     player.setTex(SDL_CreateTextureFromSurface(renderer, tmpSurface));
     SDL_FreeSurface(tmpSurface);
 
+    Astreoid ast(renderer);
+    astreoids.push_back(ast);
     running = true;
     return true;
 }
@@ -68,10 +70,14 @@ void Game::update() {
     engine.handleShooting(keyStates, player, used, notUsed);
 
     engine.updateBulletPositions(used, notUsed);
+
+    for (auto& a : astreoids) {
+        a.spinAstreoid();
+    }
 }
 
 void Game::render() {
-    gameRenderer.render(player, used);
+    gameRenderer.render(player, used, astreoids);
 }
 
 void Game::clean() {

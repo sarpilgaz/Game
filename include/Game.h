@@ -11,6 +11,7 @@
 #include "Player.h"
 #include "Bullet.h"
 #include "Engine.h"
+#include "Astreoid.h"
 class Game {
 public:
     Game();
@@ -39,6 +40,7 @@ private:
     InputHandler inputHandler;
     Player player;
     Engine engine;
+    vector<Astreoid> astreoids;
 };
 
 #endif

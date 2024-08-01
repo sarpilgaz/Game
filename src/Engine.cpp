@@ -59,13 +59,13 @@ void Engine::handleShooting(std::unordered_map<InputHandler::Keys, bool>& keySta
 }
 
 void Engine::updateBulletPositions(std::vector<Bullet>& used, std::vector<Bullet>& notUsed) {
-    for (int i = 0; i < used.size(); i++) {
-        used[i].updatePos();
-        if (used[i].bulletRect.x > SCREEN_WIDTH || used[i].bulletRect.y > SCREEN_HEIGHT || used[i].bulletRect.x < 0 || used[i].bulletRect.y < 0) {
-            Bullet b = used[i];
-            used.erase(std::next(used.begin(), i));
-            notUsed.push_back(b);
-            i--; // Adjust index after erase
+    for (auto it = used.begin(); it != used.end(); ) {
+        it->updatePos();
+        if (it->bulletRect.x > SCREEN_WIDTH || it->bulletRect.y > SCREEN_HEIGHT || it->bulletRect.x < 0 || it->bulletRect.y < 0) {
+            notUsed.push_back(*it);
+            it = used.erase(it); // Erase and update the iterator
+        } else {
+            ++it; // Move to the next element
         }
     }
 }

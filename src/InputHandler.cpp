@@ -27,16 +27,5 @@ void InputHandler::handleEvents(bool& running, std::unordered_map<Keys, bool>& k
                     keystates[U] = isPressed;
             }
         }
-        /*
-        if (event.type == SDL_KEYDOWN) {
-            if (event.key.keysym.sym == SDLK_z) {
-                keystates[Z] = true;
-            }
-        } 
-        if (event.type == SDL_KEYUP) {
-            if (event.key.keysym.sym == SDLK_z) {
-                keystates[Z] = false;
-            }
-        } */
     }
 }

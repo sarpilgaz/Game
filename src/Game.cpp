@@ -2,14 +2,7 @@
 
 Game::Game() : running(false), window(nullptr), renderer(nullptr), logger("logs.txt") {}
 
-const int FPS = 60;
-const int frameDelay = 1000 / FPS;
-Uint32 frameStart;
-int frameTime;
 
-vector<Bullet> used;
-vector<Bullet> notUsed;
-bool bulletShot = false;
 
 Game::~Game() {
     clean();
@@ -40,7 +33,7 @@ bool Game::init() {
     SDL_FreeSurface(tmpSurface);
 
     Astreoid ast(renderer);
-    astreoids.push_back(ast);
+    astreoidsUsed.push_back(ast);
     running = true;
     return true;
 }
@@ -52,6 +45,11 @@ void Game::run() {
         handleEvents();
         update();
         render();
+
+        if (SDL_GetTicks() - lastAsteroidSpawnTime >= ASTREOID_SPAWN_INTERVAL) {
+            engine.SpawnAstreoidRandomly(astreoidsUsed, renderer);
+            lastAsteroidSpawnTime = SDL_GetTicks();
+        }
 
         frameTime = SDL_GetTicks() - frameStart;
         if (frameDelay > frameTime) {
@@ -67,19 +65,19 @@ void Game::handleEvents() {
 void Game::update() {
     engine.updatePlayerPosition(keyStates, player);
 
-    engine.handleShooting(keyStates, player, used, notUsed);
+    engine.handleShooting(keyStates, player, bulletUsed, bulletNotUsed);
 
-    engine.updateBulletPositions(used, notUsed);
+    engine.updateBulletPositions(bulletUsed, bulletNotUsed);
 
     if(keyStates[InputHandler::U]) {
-        engine.SpawnAstreoidRandomly(astreoids, renderer);
+        engine.SpawnAstreoidRandomly(astreoidsUsed, renderer);
     }
 
-    engine.updateAstreoidPositions(astreoids);
+    engine.updateAstreoidPositions(astreoidsUsed, astreoidsNotUsed);
 }
 
 void Game::render() {
-    gameRenderer.render(player, used, astreoids);
+    gameRenderer.render(player, bulletUsed, astreoidsUsed);
 }
 
 void Game::clean() {

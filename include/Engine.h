@@ -22,7 +22,7 @@ class Engine {
 
         void SpawnAstreoidRandomly(std::vector<Astreoid>& astreoids, SDL_Renderer* renderer);
 
-        void updateAstreoidPositions(std::vector<Astreoid>& astreoids);
+        void updateAstreoidPositions(std::vector<Astreoid>& used, std::vector<Astreoid>& notUsed);
 
     private:
         bool bulletShot = false;

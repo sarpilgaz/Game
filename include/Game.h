@@ -32,7 +32,6 @@ public:
     void clean();
 
 private:
-    bool running;
     SDL_Window* window;
     SDL_Renderer* renderer;
     Logger logger;
@@ -40,7 +39,19 @@ private:
     InputHandler inputHandler;
     Player player;
     Engine engine;
-    vector<Astreoid> astreoids;
+    vector<Astreoid> astreoidsUsed;
+    vector<Astreoid> astreoidsNotUsed;
+    vector<Bullet> bulletUsed;
+    vector<Bullet> bulletNotUsed;
+    
+    bool running;
+    const int ASTREOID_SPAWN_INTERVAL = 3000; // 3000 milliseconds = 3 seconds
+    Uint32 lastAsteroidSpawnTime = 0;
+    const int FPS = 60;
+    const int frameDelay = 1000 / FPS;
+    Uint32 frameStart;
+    int frameTime;
+    bool bulletShot = false;
 };
 
 #endif

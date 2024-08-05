@@ -86,10 +86,16 @@ void Engine::updateBulletPositions(std::vector<Bullet>& used, std::vector<Bullet
     }
 }
 
-void Engine::updateAstreoidPositions(std::vector<Astreoid>& astreoids) {
-    for (auto& ast : astreoids) {
-        ast.updatePos();
-        ast.spinAstreoid();
+void Engine::updateAstreoidPositions(std::vector<Astreoid>& used, std::vector<Astreoid>& notUsed) {
+    for (auto it = used.begin(); it != used.end();) {
+        it->updatePos();
+        it->spinAstreoid();
+        if (it->astreoidRect.x > SCREEN_WIDTH + 200 || it->astreoidRect.y > SCREEN_HEIGHT + 200 || it->astreoidRect.x < -200 || it->astreoidRect.y < -200) {
+            notUsed.push_back(*it);
+            it = used.erase(it);
+        } else {
+            it++;
+        }
     }
 }
 

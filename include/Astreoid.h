@@ -13,7 +13,7 @@ public:
     void updatePos();
     float angle;
 private:
-    const float SPIN_SPEED = 0.016f;
+    float SPIN_SPEED = 0.016f;
 };
 
 

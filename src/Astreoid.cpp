@@ -16,3 +16,8 @@ void Astreoid::spinAstreoid() {
         angle -= 2 * M_PI;
     }
 }
+
+void Astreoid::updatePos() {
+    astreoidRect.x += getVx();
+    astreoidRect.y += getVy();
+}

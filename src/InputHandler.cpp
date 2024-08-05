@@ -23,6 +23,8 @@ void InputHandler::handleEvents(bool& running, std::unordered_map<Keys, bool>& k
                 case SDLK_a:
                     keystates[A] = isPressed;
                     break;
+                case SDLK_u:
+                    keystates[U] = isPressed;
             }
         }
         /*

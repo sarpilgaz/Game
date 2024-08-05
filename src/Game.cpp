@@ -71,9 +71,11 @@ void Game::update() {
 
     engine.updateBulletPositions(used, notUsed);
 
-    for (auto& a : astreoids) {
-        a.spinAstreoid();
+    if(keyStates[InputHandler::U]) {
+        engine.SpawnAstreoidRandomly(astreoids, renderer);
     }
+
+    engine.updateAstreoidPositions(astreoids);
 }
 
 void Game::render() {

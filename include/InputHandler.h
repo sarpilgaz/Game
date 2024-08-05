@@ -11,7 +11,8 @@ public:
         LEFT,
         DOWN,
         RIGHT,
-        A
+        A,
+        U
     };
     void handleEvents(bool& running, std::unordered_map<Keys, bool>& keystates);
 

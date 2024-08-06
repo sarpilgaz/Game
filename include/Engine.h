@@ -20,7 +20,7 @@ class Engine {
 
         void updateBulletPositions(std::vector<Bullet>& used, std::vector<Bullet>& notUsed);
 
-        void SpawnAstreoidRandomly(std::vector<Astreoid>& astreoids, SDL_Renderer* renderer);
+        void SpawnAstreoidRandomly(std::vector<Astreoid>& astreoidsUsed, std::vector<Astreoid>& astreoidsUnUsed, SDL_Renderer* renderer);
 
         void updateAstreoidPositions(std::vector<Astreoid>& used, std::vector<Astreoid>& notUsed);
 

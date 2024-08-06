@@ -58,7 +58,7 @@ void Engine::handleShooting(std::unordered_map<InputHandler::Keys, bool>& keySta
                 used.push_back(b);
             }
             else {
-                Bullet b = notUsed.back();
+                Bullet b = std::move(notUsed.back());
                 notUsed.pop_back();
                 b.bulletRect.x = static_cast<int>(tipX);
                 b.bulletRect.y = static_cast<int>(tipY);
@@ -99,9 +99,9 @@ void Engine::updateAstreoidPositions(std::vector<Astreoid>& used, std::vector<As
     }
 }
 
-void Engine::SpawnAstreoidRandomly(std::vector<Astreoid>& astreoids, SDL_Renderer* renderer) {
-    Astreoid ast(renderer);
+void Engine::SpawnAstreoidRandomly(std::vector<Astreoid>& astreoidsUsed, std::vector<Astreoid>& astreoidsUnUsed, SDL_Renderer* renderer) {
 
+    Astreoid ast = astreoidsUnUsed.empty() ? Astreoid(renderer) : std::move(astreoidsUnUsed.back());
     int side = rand() % 4;
 
     switch(side) {
@@ -127,6 +127,10 @@ void Engine::SpawnAstreoidRandomly(std::vector<Astreoid>& astreoids, SDL_Rendere
             break;       
     }
 
-    astreoids.push_back(ast);
+    if (!astreoidsUnUsed.empty()) {
+        astreoidsUnUsed.pop_back();
+    }
+
+    astreoidsUsed.push_back(ast);
 
 }

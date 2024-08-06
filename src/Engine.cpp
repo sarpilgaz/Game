@@ -1,5 +1,31 @@
 #include "Engine.h"
 
+void Engine::updateGamestate(std::unordered_map<InputHandler::Keys, bool>& keystates, 
+                            Player& player,
+                            std::vector<Bullet>& bulletsUsed,
+                            std::vector<Bullet>& bulletsNotUsed,
+                            std::vector<Astreoid>& astreoidsUsed,
+                            std::vector<Astreoid>& astreoidsNotUsed,
+                            SDL_Renderer* renderer) 
+    {
+        updatePlayerPosition(keystates, player);
+
+        handleShooting(keystates, player, bulletsUsed, bulletsNotUsed);
+
+        updateBulletPositions(bulletsUsed, bulletsNotUsed);
+
+        if(keystates[InputHandler::U]) {
+            spawnAstreoidRandomly(astreoidsUsed, astreoidsNotUsed, renderer);
+        }
+
+        updateAstreoidPositions(astreoidsUsed, astreoidsNotUsed);                      
+    }
+
+
+void Engine::spawnAstreoid(std::vector<Astreoid>& astreoidsUsed, std::vector<Astreoid>& astreoidsUnUsed, SDL_Renderer* renderer) {
+    spawnAstreoidRandomly(astreoidsUsed, astreoidsUnUsed, renderer);
+}
+
 // Generate a random float between min and max
 float Engine::randomFloat(float min, float max) {
     return min + static_cast<float>(rand()) / (static_cast<float>(RAND_MAX / (max - min)));
@@ -99,7 +125,7 @@ void Engine::updateAstreoidPositions(std::vector<Astreoid>& used, std::vector<As
     }
 }
 
-void Engine::SpawnAstreoidRandomly(std::vector<Astreoid>& astreoidsUsed, std::vector<Astreoid>& astreoidsUnUsed, SDL_Renderer* renderer) {
+void Engine::spawnAstreoidRandomly(std::vector<Astreoid>& astreoidsUsed, std::vector<Astreoid>& astreoidsUnUsed, SDL_Renderer* renderer) {
 
     Astreoid ast = astreoidsUnUsed.empty() ? Astreoid(renderer) : std::move(astreoidsUnUsed.back());
     int side = rand() % 4;

@@ -14,15 +14,17 @@
 
 class Engine {
     public:
-        void updatePlayerPosition(std::unordered_map<InputHandler::Keys, bool>& keyStates, Player& player);
+        void updateGamestate(std::unordered_map<InputHandler::Keys, bool>& keystates, 
+                            Player& player,
+                            std::vector<Bullet>& bulletsUsed,
+                            std::vector<Bullet>& bulletsNotUsed,
+                            std::vector<Astreoid>& astreoidsUsed,
+                            std::vector<Astreoid>& astreoidsNotUsed,
+                            SDL_Renderer* renderer);
 
-        void handleShooting(std::unordered_map<InputHandler::Keys, bool>& keyStates, Player& player, std::vector<Bullet>& used, std::vector<Bullet>& notUsed);
+        void spawnAstreoid(std::vector<Astreoid>& astreoidsUsed, std::vector<Astreoid>& astreoidsUnUsed, SDL_Renderer* renderer);
 
-        void updateBulletPositions(std::vector<Bullet>& used, std::vector<Bullet>& notUsed);
-
-        void SpawnAstreoidRandomly(std::vector<Astreoid>& astreoidsUsed, std::vector<Astreoid>& astreoidsUnUsed, SDL_Renderer* renderer);
-
-        void updateAstreoidPositions(std::vector<Astreoid>& used, std::vector<Astreoid>& notUsed);
+        
 
     private:
         bool bulletShot = false;
@@ -33,8 +35,21 @@ class Engine {
         const int MIN_ASTREOID_VELOCITY = 2;
         const int MAX_ASTREOID_VELOCITY = 5;
         const int ASTREOID_SPAWN_OFFSET = 100;
+
+
         float randomFloat(float min, float max);
+
         void calculateRandomAstreoidVelocity(Astreoid& astreoid, float targetX, float targetY);
+
+        void updatePlayerPosition(std::unordered_map<InputHandler::Keys, bool>& keyStates, Player& player);
+
+        void handleShooting(std::unordered_map<InputHandler::Keys, bool>& keyStates, Player& player, std::vector<Bullet>& used, std::vector<Bullet>& notUsed);
+
+        void updateBulletPositions(std::vector<Bullet>& used, std::vector<Bullet>& notUsed);
+
+        void updateAstreoidPositions(std::vector<Astreoid>& used, std::vector<Astreoid>& notUsed);
+
+        void spawnAstreoidRandomly(std::vector<Astreoid>& astreoidsUsed, std::vector<Astreoid>& astreoidsUnUsed, SDL_Renderer* renderer);
 };
 
 #endif

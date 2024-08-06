@@ -47,7 +47,7 @@ void Game::run() {
         render();
 
         if (SDL_GetTicks() - lastAsteroidSpawnTime >= ASTREOID_SPAWN_INTERVAL) {
-            engine.SpawnAstreoidRandomly(astreoidsUsed, astreoidsNotUsed, renderer);
+            engine.spawnAstreoid(astreoidsUsed, astreoidsNotUsed, renderer);
             lastAsteroidSpawnTime = SDL_GetTicks();
         }
 
@@ -63,20 +63,7 @@ void Game::handleEvents() {
 }
 
 void Game::update() {
-    engine.updatePlayerPosition(keyStates, player);
-
-    engine.handleShooting(keyStates, player, bulletUsed, bulletNotUsed);
-
-    engine.updateBulletPositions(bulletUsed, bulletNotUsed);
-
-    if(keyStates[InputHandler::U]) {
-        engine.SpawnAstreoidRandomly(astreoidsUsed, astreoidsNotUsed, renderer);
-    }
-
-    engine.updateAstreoidPositions(astreoidsUsed, astreoidsNotUsed);
-
-    std::cout << "size of used ast: " << astreoidsUsed.size() << std::endl;
-    std::cout << "size of unused ast: " << astreoidsNotUsed.size() << std::endl;
+   engine.updateGamestate(keyStates, player, bulletUsed, bulletNotUsed, astreoidsUsed, astreoidsNotUsed, renderer); 
 }
 
 void Game::render() {

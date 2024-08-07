@@ -7,7 +7,6 @@
 class Player : public Entity {
 public:
     Player();
-    float angle;
 
     int getHealth() const { return health; }
     void setHealth(int newHealth) { health = newHealth; }

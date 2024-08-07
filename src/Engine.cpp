@@ -77,8 +77,8 @@ void Engine::handleShooting(std::unordered_map<InputHandler::Keys, bool>& keySta
 
     if (keyStates[InputHandler::A]) {
         if (!bulletShot) {
-            float bulletVx = (Bullet::BULLET_SPEED + abs(player.getVx())) * cos(player.angle - M_PI_2);
-            float bulletVy = (Bullet::BULLET_SPEED + abs(player.getVy())) * sin(player.angle - M_PI_2); 
+            float bulletVx = (Bullet::BULLET_SPEED + abs(player.getVx())) * cos(player.getAngle() - M_PI_2);
+            float bulletVy = (Bullet::BULLET_SPEED + abs(player.getVy())) * sin(player.getAngle() - M_PI_2); 
             if (notUsed.empty()) {
                 Bullet b(tipX, tipY, bulletVx, bulletVy);
                 used.push_back(b);

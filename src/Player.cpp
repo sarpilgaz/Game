@@ -5,13 +5,13 @@ Player::Player(){
     vx = 0.0f;
     vy = 0.0f;
     angle = 0.0f; 
-    playerCharacter = {150, 150, 32, 32};
+    entityRect = {150, 150, 32, 32};
     health = 100;
 }
 
 void Player::updatePos() {
-    playerCharacter.x = playerCharacter.x + vx;
-    playerCharacter.y = playerCharacter.y + vy;
+    entityRect.x += vx;
+    entityRect.y += vy;
 
     float targetAngle = atan2(vy, vx) + M_PI_2;
     float rotationSpeed = 0.08f;
@@ -31,8 +31,8 @@ void Player::updatePos() {
 
 void Player::getTipCoord(float& x, float& y) {
     // Center of the ship
-    float centerX = playerCharacter.x + playerCharacter.w / 2;
-    float centerY = playerCharacter.y + playerCharacter.h / 2;
+    float centerX = entityRect.x + entityRect.w / 2;
+    float centerY = entityRect.y + entityRect.h / 2;
 
     const float OFFSET = 5.0f;
 

@@ -33,8 +33,8 @@ float Engine::randomFloat(float min, float max) {
 
 void Engine::calculateRandomAstreoidVelocity(Astreoid& astreoid, float targetX, float targetY) {
     //determine direction vector & normalize vector
-    float dx = targetX - astreoid.astreoidRect.x;
-    float dy = targetY - astreoid.astreoidRect.y;
+    float dx = targetX - astreoid.entityRect.x;
+    float dy = targetY - astreoid.entityRect.y;
     float length = std::sqrt(dx * dx + dy * dy);
     dx /= length;
     dy /= length;
@@ -86,8 +86,8 @@ void Engine::handleShooting(std::unordered_map<InputHandler::Keys, bool>& keySta
             else {
                 Bullet b = std::move(notUsed.back());
                 notUsed.pop_back();
-                b.bulletRect.x = static_cast<int>(tipX);
-                b.bulletRect.y = static_cast<int>(tipY);
+                b.entityRect.x = static_cast<int>(tipX);
+                b.entityRect.y = static_cast<int>(tipY);
                 b.setVx(bulletVx);
                 b.setVy(bulletVy);
                 used.push_back(b);
@@ -103,7 +103,7 @@ void Engine::handleShooting(std::unordered_map<InputHandler::Keys, bool>& keySta
 void Engine::updateBulletPositions(std::vector<Bullet>& used, std::vector<Bullet>& notUsed) {
     for (auto it = used.begin(); it != used.end(); ) {
         it->updatePos();
-        if (it->bulletRect.x > SCREEN_WIDTH || it->bulletRect.y > SCREEN_HEIGHT || it->bulletRect.x < 0 || it->bulletRect.y < 0) {
+        if (it->entityRect.x > SCREEN_WIDTH || it->entityRect.y > SCREEN_HEIGHT || it->entityRect.x < 0 || it->entityRect.y < 0) {
             notUsed.push_back(*it);
             it = used.erase(it); // Erase and update the iterator
         } else {
@@ -116,7 +116,7 @@ void Engine::updateAstreoidPositions(std::vector<Astreoid>& used, std::vector<As
     for (auto it = used.begin(); it != used.end();) {
         it->updatePos();
         it->spinAstreoid();
-        if (it->astreoidRect.x > SCREEN_WIDTH + 200 || it->astreoidRect.y > SCREEN_HEIGHT + 200 || it->astreoidRect.x < -200 || it->astreoidRect.y < -200) {
+        if (it->entityRect.x > SCREEN_WIDTH + 200 || it->entityRect.y > SCREEN_HEIGHT + 200 || it->entityRect.x < -200 || it->entityRect.y < -200) {
             notUsed.push_back(*it);
             it = used.erase(it);
         } else {
@@ -132,23 +132,23 @@ void Engine::spawnAstreoidRandomly(std::vector<Astreoid>& astreoidsUsed, std::ve
 
     switch(side) {
         case 0: //top
-            ast.astreoidRect.x = randomFloat(-ASTREOID_SPAWN_OFFSET, SCREEN_WIDTH + ASTREOID_SPAWN_OFFSET);
-            ast.astreoidRect.y = -ASTREOID_SPAWN_OFFSET;
+            ast.entityRect.x = randomFloat(-ASTREOID_SPAWN_OFFSET, SCREEN_WIDTH + ASTREOID_SPAWN_OFFSET);
+            ast.entityRect.y = -ASTREOID_SPAWN_OFFSET;
             calculateRandomAstreoidVelocity(ast, randomFloat(0, SCREEN_WIDTH), SCREEN_HEIGHT / 2);
             break;
         case 1: //right
-            ast.astreoidRect.x = SCREEN_WIDTH + ASTREOID_SPAWN_OFFSET;
-            ast.astreoidRect.y = randomFloat(-ASTREOID_SPAWN_OFFSET, SCREEN_HEIGHT+ ASTREOID_SPAWN_OFFSET);
+            ast.entityRect.x = SCREEN_WIDTH + ASTREOID_SPAWN_OFFSET;
+            ast.entityRect.y = randomFloat(-ASTREOID_SPAWN_OFFSET, SCREEN_HEIGHT+ ASTREOID_SPAWN_OFFSET);
             calculateRandomAstreoidVelocity(ast, 0, randomFloat(0, SCREEN_HEIGHT));
             break;
         case 2: //bottom
-            ast.astreoidRect.x = randomFloat(-ASTREOID_SPAWN_OFFSET, SCREEN_WIDTH + ASTREOID_SPAWN_OFFSET);
-            ast.astreoidRect.y = SCREEN_HEIGHT +ASTREOID_SPAWN_OFFSET;
+            ast.entityRect.x = randomFloat(-ASTREOID_SPAWN_OFFSET, SCREEN_WIDTH + ASTREOID_SPAWN_OFFSET);
+            ast.entityRect.y = SCREEN_HEIGHT +ASTREOID_SPAWN_OFFSET;
             calculateRandomAstreoidVelocity(ast, randomFloat(0, SCREEN_WIDTH), 0);
             break;
         case 3: //left
-            ast.astreoidRect.x = -ASTREOID_SPAWN_OFFSET;
-            ast.astreoidRect.y = randomFloat(-ASTREOID_SPAWN_OFFSET, SCREEN_HEIGHT + ASTREOID_SPAWN_OFFSET);
+            ast.entityRect.x = -ASTREOID_SPAWN_OFFSET;
+            ast.entityRect.y = randomFloat(-ASTREOID_SPAWN_OFFSET, SCREEN_HEIGHT + ASTREOID_SPAWN_OFFSET);
             calculateRandomAstreoidVelocity(ast, SCREEN_WIDTH, randomFloat(0, SCREEN_HEIGHT)); 
             break;       
     }

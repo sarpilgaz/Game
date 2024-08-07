@@ -7,7 +7,6 @@
 class Player : public Entity {
 public:
     Player();
-    SDL_Rect playerCharacter;
     float angle;
 
     int getHealth() const { return health; }

@@ -11,16 +11,16 @@ void Renderer::render(const Player& player, std::vector<Bullet>& activeBullets, 
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
     SDL_RenderClear(renderer);
 
-    SDL_RenderCopyEx(renderer, player.getTex(), NULL, &player.playerCharacter, player.angle * (180.0 / M_PI), nullptr, SDL_FLIP_NONE);
+    SDL_RenderCopyEx(renderer, player.getTex(), NULL, &player.entityRect, player.angle * (180.0 / M_PI), nullptr, SDL_FLIP_NONE);
 
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
 
     for (auto b : activeBullets) {
-        SDL_RenderDrawRect(renderer, &b.bulletRect);
+        SDL_RenderDrawRect(renderer, &b.entityRect);
     }
 
     for (auto a : astreoids) {
-        SDL_RenderCopyEx(renderer, a.getTex(), NULL, &a.astreoidRect, a.angle * (180.0 / M_PI), nullptr, SDL_FLIP_NONE);
+        SDL_RenderCopyEx(renderer, a.getTex(), NULL, &a.entityRect, a.angle * (180.0 / M_PI), nullptr, SDL_FLIP_NONE);
     }
     SDL_RenderPresent(renderer);
 }

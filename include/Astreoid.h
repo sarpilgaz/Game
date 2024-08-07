@@ -8,9 +8,7 @@ class Astreoid : public Entity {
 
 public:
     Astreoid(SDL_Renderer* renderer);
-    SDL_Rect astreoidRect;
     void spinAstreoid();
-    void updatePos();
     float angle;
 private:
     float SPIN_SPEED = 0.016f;

@@ -7,3 +7,8 @@ void Entity::updateVx(float amount) {
 void Entity::updateVy(float amount) {
     vy = vy + amount;
 }
+
+void Entity::updatePos() {
+    entityRect.x += vx;
+    entityRect.y += vy;
+}

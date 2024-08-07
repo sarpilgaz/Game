@@ -6,10 +6,11 @@
 class Entity {
 protected:
     float vx, vy;
+    SDL_Texture* entityTex;
 
 public:
     Entity() : vx(0), vy(0) {}
-    SDL_Texture* entityTex;
+    SDL_Rect entityRect;
 
     int getVx() const { return vx; }
     int getVy() const { return vy; }
@@ -21,6 +22,7 @@ public:
     void setTex(SDL_Texture* tex) { entityTex = tex; }
     void updateVx(float amount);
     void updateVy(float amount);
+    void updatePos();
 };
 
 #endif // ENTITY_H

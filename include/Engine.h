@@ -52,7 +52,9 @@ class Engine {
 
         void spawnAstreoidRandomly(std::vector<Astreoid>& astreoidsUsed, std::vector<Astreoid>& astreoidsUnUsed, SDL_Renderer* renderer);
 
-        bool checkCollisions(const Entity& e1, const Entity& e2);
+        bool checkCollisionsSAT(const Entity& e1, const Entity& e2);
+
+        bool checkCircularCollision(const Entity& circleEntity, const Entity& rectEntity);
 
         void projectOntoAxis(const std::array<SDL_Point, 4>& vertices, const SDL_Point& axis, float& min, float& max);
 };

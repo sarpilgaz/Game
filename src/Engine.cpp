@@ -22,7 +22,7 @@ void Engine::updateGamestate(std::unordered_map<InputHandler::Keys, bool>& keyst
 
         for (auto& ast : astreoidsUsed) {
             for (auto& bul : bulletsUsed) {
-                if (checkCollisions(ast, bul)) {
+                if (checkCircularCollision(ast, bul)) {
                     std::cout << "collision" << std::endl;
                 } else std::cout << "no collision" << std::endl; 
             }
@@ -169,7 +169,23 @@ void Engine::spawnAstreoidRandomly(std::vector<Astreoid>& astreoidsUsed, std::ve
 
 }
 
-bool Engine::checkCollisions(const Entity& e1, const Entity& e2) {
+bool Engine::checkCircularCollision(const Entity& circleEntity, const Entity& rectEntity) {
+    float circleCenterX = circleEntity.entityRect.x + circleEntity.entityRect.w/2;
+    float circleCenterY = circleEntity.entityRect.y + circleEntity.entityRect.h/2;
+    float radius = circleEntity.entityRect.w/2; // astreoids are squares
+
+    float closestX = std::max(rectEntity.entityRect.x, std::min(static_cast<int> (circleCenterX), rectEntity.entityRect.x + rectEntity.entityRect.w));
+    float closestY = std::max(rectEntity.entityRect.y, std::min(static_cast<int>(circleCenterY), rectEntity.entityRect.y + rectEntity.entityRect.h));
+
+    // Calculate the distance between the circle's center and this closest point
+    float distanceX = circleCenterX - closestX;
+    float distanceY = circleCenterY - closestY;
+
+    // If the distance is less than the circle's radius, there's an intersection
+    return (distanceX * distanceX + distanceY * distanceY) < (radius * radius);
+}
+
+bool Engine::checkCollisionsSAT(const Entity& e1, const Entity& e2) {
     auto vertices1 = e1.getVertices();
     auto vertices2 = e2.getVertices();
 

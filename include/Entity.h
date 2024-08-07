@@ -2,6 +2,9 @@
 #define ENTITY_H
 
 #include <SDL_image.h>
+#include <SDL2/SDL.h>
+#include <cmath>
+#include <array>
 
 class Entity {
 protected:
@@ -13,6 +16,7 @@ protected:
 public:
     Entity() : vx(0), vy(0) {}
     SDL_Rect entityRect;
+    std::array<SDL_Point, 4> getVertices() const;
 
     int getVx() const { return vx; }
     int getVy() const { return vy; }

@@ -22,5 +22,6 @@ void Renderer::render(const Player& player, std::vector<Bullet>& activeBullets, 
     for (auto a : astreoids) {
         SDL_RenderCopyEx(renderer, a.getTex(), NULL, &a.entityRect, a.getAngle() * (180.0 / M_PI), nullptr, SDL_FLIP_NONE);
     }
+
     SDL_RenderPresent(renderer);
 }

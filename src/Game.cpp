@@ -45,11 +45,11 @@ void Game::run() {
         handleEvents();
         update();
         render();
-
+        /*
         if (SDL_GetTicks() - lastAsteroidSpawnTime >= ASTREOID_SPAWN_INTERVAL) {
             engine.spawnAstreoid(astreoidsUsed, astreoidsNotUsed, renderer);
             lastAsteroidSpawnTime = SDL_GetTicks();
-        }
+        } */
 
         frameTime = SDL_GetTicks() - frameStart;
         if (frameDelay > frameTime) {

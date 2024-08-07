@@ -18,7 +18,15 @@ void Engine::updateGamestate(std::unordered_map<InputHandler::Keys, bool>& keyst
             spawnAstreoidRandomly(astreoidsUsed, astreoidsNotUsed, renderer);
         }
 
-        updateAstreoidPositions(astreoidsUsed, astreoidsNotUsed);                      
+        updateAstreoidPositions(astreoidsUsed, astreoidsNotUsed);    
+
+        for (auto& ast : astreoidsUsed) {
+            for (auto& bul : bulletsUsed) {
+                if (checkCollisions(ast, bul)) {
+                    std::cout << "collision" << std::endl;
+                } else std::cout << "no collision" << std::endl; 
+            }
+        }                  
     }
 
 
@@ -159,4 +167,54 @@ void Engine::spawnAstreoidRandomly(std::vector<Astreoid>& astreoidsUsed, std::ve
 
     astreoidsUsed.push_back(ast);
 
+}
+
+bool Engine::checkCollisions(const Entity& e1, const Entity& e2) {
+    auto vertices1 = e1.getVertices();
+    auto vertices2 = e2.getVertices();
+
+    /* std::array<SDL_Point, 4> axes = {
+        SDL_Point{vertices1[1].x - vertices1[0].x, vertices1[1].y - vertices1[0].y},
+        SDL_Point{vertices1[2].x - vertices1[1].x, vertices1[2].y - vertices1[1].y},
+        SDL_Point{vertices2[1].x - vertices2[0].x, vertices2[1].y - vertices2[0].y},
+        SDL_Point{vertices2[2].x - vertices2[0].x, vertices2[2].y - vertices2[1].y},
+    }; */
+
+    std::array<SDL_Point, 8> axes2 = {
+    // For the first rectangle (e1)
+    SDL_Point{vertices1[1].y - vertices1[0].y, vertices1[0].x - vertices1[1].x}, // Perpendicular to edge (0 to 1)
+    SDL_Point{vertices1[2].y - vertices1[1].y, vertices1[1].x - vertices1[2].x}, // Perpendicular to edge (1 to 2)
+    SDL_Point{vertices1[3].y - vertices1[2].y, vertices1[2].x - vertices1[3].x}, // Perpendicular to edge (2 to 3)
+    SDL_Point{vertices1[0].y - vertices1[3].y, vertices1[3].x - vertices1[0].x}, // Perpendicular to edge (3 to 0)
+
+    // For the second rectangle (e2)
+    SDL_Point{vertices2[1].y - vertices2[0].y, vertices2[0].x - vertices2[1].x}, // Perpendicular to edge (0 to 1)
+    SDL_Point{vertices2[2].y - vertices2[1].y, vertices2[1].x - vertices2[2].x}, // Perpendicular to edge (1 to 2)
+    SDL_Point{vertices2[3].y - vertices2[2].y, vertices2[2].x - vertices2[3].x}, // Perpendicular to edge (2 to 3)
+    SDL_Point{vertices2[0].y - vertices2[3].y, vertices2[3].x - vertices2[0].x}  // Perpendicular to edge (3 to 0)
+};
+
+    for (auto& axis : axes2) {
+        float length = sqrt(axis.x * axis.x + axis.y * axis.y);
+        axis.x /= length;
+        axis.y /= length;
+
+        float min1, max1, min2, max2;
+        projectOntoAxis(vertices1, axis, min1, max1);
+        projectOntoAxis(vertices2, axis, min2, max2);
+
+        if (max1 < min2 || max2 < min1) {
+            return false;
+        } 
+    }
+    return true;
+}
+
+void Engine::projectOntoAxis(const std::array<SDL_Point, 4>& vertices, const SDL_Point& axis, float& min, float& max) {
+    min = max = (vertices[0].x * axis.x + vertices[0].y * axis.y);
+    for (const auto& vertex : vertices) {
+        float projection = (vertex.x * axis.x + vertex.y * axis.y);
+        if (projection < min) min = projection;
+        if (projection > max) max = projection;
+    }
 }

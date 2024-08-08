@@ -18,13 +18,20 @@ std::array<SDL_Point, 4> Entity::getVertices() const {
     float cosA = cos(angle * M_PI / 180.0);
     float sinA = sin(angle * M_PI / 180.0);
 
-    float halfW = entityRect.w / 2;
-    float halfH = entityRect.h / 2;
+    float halfW = entityRect.w / 2.0f;
+    float halfH = entityRect.h / 2.0f;
 
-    vertices[0] = { static_cast<int>(entityRect.x + halfW * cosA - halfH * sinA), static_cast<int>(entityRect.y + halfW * sinA + halfH * cosA) };
-    vertices[1] = { static_cast<int>(entityRect.x + halfW * cosA + halfH * sinA), static_cast<int>(entityRect.y + halfW * sinA - halfH * cosA) };
-    vertices[2] = { static_cast<int>(entityRect.x - halfW * cosA + halfH * sinA), static_cast<int>(entityRect.y - halfW * sinA - halfH * cosA) };
-    vertices[3] = { static_cast<int>(entityRect.x - halfW * cosA - halfH * sinA), static_cast<int>(entityRect.y - halfW * sinA + halfH * cosA) };
+    float centerX = entityRect.x + halfW;
+    float centerY = entityRect.y + halfH;
+
+    // Top-left corner
+    vertices[0] = { static_cast<int>(centerX + (-halfW * cosA - -halfH * sinA)), static_cast<int>(centerY + (-halfW * sinA + -halfH * cosA)) };
+    // Top-right corner
+    vertices[1] = { static_cast<int>(centerX + (halfW * cosA - -halfH * sinA)), static_cast<int>(centerY + (halfW * sinA + -halfH * cosA)) };
+    // Bottom-right corner
+    vertices[2] = { static_cast<int>(centerX + (halfW * cosA - halfH * sinA)), static_cast<int>(centerY + (halfW * sinA + halfH * cosA)) };
+    // Bottom-left corner
+    vertices[3] = { static_cast<int>(centerX + (-halfW * cosA - halfH * sinA)), static_cast<int>(centerY + (-halfW * sinA + halfH * cosA)) };
 
     return vertices;
 }

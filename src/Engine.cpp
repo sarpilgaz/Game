@@ -189,41 +189,41 @@ bool Engine::checkCollisionsSAT(const Entity& e1, const Entity& e2) {
     auto vertices1 = e1.getVertices();
     auto vertices2 = e2.getVertices();
 
-    /* std::array<SDL_Point, 4> axes = {
-        SDL_Point{vertices1[1].x - vertices1[0].x, vertices1[1].y - vertices1[0].y},
-        SDL_Point{vertices1[2].x - vertices1[1].x, vertices1[2].y - vertices1[1].y},
-        SDL_Point{vertices2[1].x - vertices2[0].x, vertices2[1].y - vertices2[0].y},
-        SDL_Point{vertices2[2].x - vertices2[0].x, vertices2[2].y - vertices2[1].y},
-    }; */
+    // Create an array to store the axes for both entities
+    std::array<SDL_Point, 8> axes = {
+        // For the first rectangle (e1)
+        SDL_Point{vertices1[1].y - vertices1[0].y, vertices1[0].x - vertices1[1].x}, // Perpendicular to edge (0 to 1)
+        SDL_Point{vertices1[2].y - vertices1[1].y, vertices1[1].x - vertices1[2].x}, // Perpendicular to edge (1 to 2)
+        SDL_Point{vertices1[3].y - vertices1[2].y, vertices1[2].x - vertices1[3].x}, // Perpendicular to edge (2 to 3)
+        SDL_Point{vertices1[0].y - vertices1[3].y, vertices1[3].x - vertices1[0].x}, // Perpendicular to edge (3 to 0)
 
-    std::array<SDL_Point, 8> axes2 = {
-    // For the first rectangle (e1)
-    SDL_Point{vertices1[1].y - vertices1[0].y, vertices1[0].x - vertices1[1].x}, // Perpendicular to edge (0 to 1)
-    SDL_Point{vertices1[2].y - vertices1[1].y, vertices1[1].x - vertices1[2].x}, // Perpendicular to edge (1 to 2)
-    SDL_Point{vertices1[3].y - vertices1[2].y, vertices1[2].x - vertices1[3].x}, // Perpendicular to edge (2 to 3)
-    SDL_Point{vertices1[0].y - vertices1[3].y, vertices1[3].x - vertices1[0].x}, // Perpendicular to edge (3 to 0)
+        // For the second rectangle (e2)
+        SDL_Point{vertices2[1].y - vertices2[0].y, vertices2[0].x - vertices2[1].x}, // Perpendicular to edge (0 to 1)
+        SDL_Point{vertices2[2].y - vertices2[1].y, vertices2[1].x - vertices2[2].x}, // Perpendicular to edge (1 to 2)
+        SDL_Point{vertices2[3].y - vertices2[2].y, vertices2[2].x - vertices2[3].x}, // Perpendicular to edge (2 to 3)
+        SDL_Point{vertices2[0].y - vertices2[3].y, vertices2[3].x - vertices2[0].x}  // Perpendicular to edge (3 to 0)
+    };
 
-    // For the second rectangle (e2)
-    SDL_Point{vertices2[1].y - vertices2[0].y, vertices2[0].x - vertices2[1].x}, // Perpendicular to edge (0 to 1)
-    SDL_Point{vertices2[2].y - vertices2[1].y, vertices2[1].x - vertices2[2].x}, // Perpendicular to edge (1 to 2)
-    SDL_Point{vertices2[3].y - vertices2[2].y, vertices2[2].x - vertices2[3].x}, // Perpendicular to edge (2 to 3)
-    SDL_Point{vertices2[0].y - vertices2[3].y, vertices2[3].x - vertices2[0].x}  // Perpendicular to edge (3 to 0)
-};
-
-    for (auto& axis : axes2) {
+    // Iterate through all axes
+    for (auto& axis : axes) {
+        // Normalize the axis
         float length = sqrt(axis.x * axis.x + axis.y * axis.y);
-        axis.x /= length;
-        axis.y /= length;
+        if (length != 0) { 
+            axis.x /= length;
+            axis.y /= length;
+        }
 
         float min1, max1, min2, max2;
+        // Project vertices of both rectangles onto the current axis
         projectOntoAxis(vertices1, axis, min1, max1);
         projectOntoAxis(vertices2, axis, min2, max2);
 
+        // Check for a separating axis
         if (max1 < min2 || max2 < min1) {
-            return false;
-        } 
+            return false; // No collision
+        }
     }
-    return true;
+    return true; // Collision detected
 }
 
 void Engine::projectOntoAxis(const std::array<SDL_Point, 4>& vertices, const SDL_Point& axis, float& min, float& max) {

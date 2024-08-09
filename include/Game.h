@@ -5,6 +5,7 @@
 #include <SDL_image.h>
 #include <unordered_map>
 #include <vector>
+#include <list>
 #include "Logger.h"
 #include "Renderer.h"
 #include "InputHandler.h"
@@ -39,10 +40,10 @@ private:
     InputHandler inputHandler;
     Player player;
     Engine engine;
-    vector<Astreoid> astreoidsUsed;
-    vector<Astreoid> astreoidsNotUsed;
-    vector<Bullet> bulletUsed;
-    vector<Bullet> bulletNotUsed;
+    list<Astreoid> astreoidsUsed;
+    list<Astreoid> astreoidsNotUsed;
+    list<Bullet> bulletUsed;
+    list<Bullet> bulletNotUsed;
     
     bool running;
     const int ASTREOID_SPAWN_INTERVAL = 3000; // 3000 milliseconds = 3 seconds

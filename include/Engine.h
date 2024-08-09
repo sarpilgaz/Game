@@ -3,7 +3,8 @@
 
 #include <SDL2/SDL.h>
 #include <unordered_map>
-#include <vector>
+#include <list>
+#include <list>
 #include <cmath>
 #include <ctime>
 #include <iostream>
@@ -17,13 +18,13 @@ class Engine {
     public:
         void updateGamestate(std::unordered_map<InputHandler::Keys, bool>& keystates, 
                             Player& player,
-                            std::vector<Bullet>& bulletsUsed,
-                            std::vector<Bullet>& bulletsNotUsed,
-                            std::vector<Astreoid>& astreoidsUsed,
-                            std::vector<Astreoid>& astreoidsNotUsed,
+                            std::list<Bullet>& bulletsUsed,
+                            std::list<Bullet>& bulletsNotUsed,
+                            std::list<Astreoid>& astreoidsUsed,
+                            std::list<Astreoid>& astreoidsNotUsed,
                             SDL_Renderer* renderer);
 
-        void spawnAstreoid(std::vector<Astreoid>& astreoidsUsed, std::vector<Astreoid>& astreoidsUnUsed, SDL_Renderer* renderer);
+        void spawnAstreoid(std::list<Astreoid>& astreoidsUsed, std::list<Astreoid>& astreoidsUnUsed, SDL_Renderer* renderer);
 
         
 
@@ -44,19 +45,23 @@ class Engine {
 
         void updatePlayerPosition(std::unordered_map<InputHandler::Keys, bool>& keyStates, Player& player);
 
-        void handleShooting(std::unordered_map<InputHandler::Keys, bool>& keyStates, Player& player, std::vector<Bullet>& used, std::vector<Bullet>& notUsed);
+        void handleShooting(std::unordered_map<InputHandler::Keys, bool>& keyStates, Player& player, std::list<Bullet>& used, std::list<Bullet>& notUsed);
 
-        void updateBulletPositions(std::vector<Bullet>& used, std::vector<Bullet>& notUsed);
+        void updateBulletPositions(std::list<Bullet>& used, std::list<Bullet>& notUsed);
 
-        void updateAstreoidPositions(std::vector<Astreoid>& used, std::vector<Astreoid>& notUsed);
+        void updateAstreoidPositions(std::list<Astreoid>& used, std::list<Astreoid>& notUsed);
 
-        void spawnAstreoidRandomly(std::vector<Astreoid>& astreoidsUsed, std::vector<Astreoid>& astreoidsUnUsed, SDL_Renderer* renderer);
+        void spawnAstreoidRandomly(std::list<Astreoid>& astreoidsUsed, std::list<Astreoid>& astreoidsUnUsed, SDL_Renderer* renderer);
 
         bool checkCollisionsSAT(const Entity& e1, const Entity& e2);
 
         bool checkCircularCollision(const Entity& circleEntity, const Entity& rectEntity);
 
         void projectOntoAxis(const std::array<SDL_Point, 4>& vertices, const SDL_Point& axis, float& min, float& max);
+
+        void handleCollision(std::list<Astreoid>& astreoidsUsed, std::list<Bullet>& bulletsUsed, 
+                                     std::list<Astreoid>& astreoidsNotUsed, std::list<Bullet>& bulletsNotUsed,
+                                     std::list<Astreoid>::iterator& ait, std::list<Bullet>::iterator& bit, bool& erased);
 };
 
 #endif

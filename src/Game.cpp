@@ -45,11 +45,14 @@ void Game::run() {
         handleEvents();
         update();
         render();
-        /*
+        
         if (SDL_GetTicks() - lastAsteroidSpawnTime >= ASTREOID_SPAWN_INTERVAL) {
             engine.spawnAstreoid(astreoidsUsed, astreoidsNotUsed, renderer);
             lastAsteroidSpawnTime = SDL_GetTicks();
-        } */
+        } 
+
+        std::cout << "size of used bullet and used ast: " << bulletUsed.size() << " " << astreoidsUsed.size() << std::endl;
+        std::cout << "size of NOTused bullet and NOTused ast: " << bulletNotUsed.size() << " " << astreoidsNotUsed.size() << std::endl;
 
         frameTime = SDL_GetTicks() - frameStart;
         if (frameDelay > frameTime) {

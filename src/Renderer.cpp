@@ -7,7 +7,7 @@ void Renderer::setRenderer(SDL_Renderer* renderer) {
     this->renderer = renderer;
 }
 
-void Renderer::render(const Player& player, std::vector<Bullet>& activeBullets, std::vector<Astreoid>& astreoids) {
+void Renderer::render(const Player& player, std::list<Bullet>& activeBullets, std::list<Astreoid>& astreoids) {
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
     SDL_RenderClear(renderer);
 

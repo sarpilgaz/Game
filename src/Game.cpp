@@ -51,9 +51,6 @@ void Game::run() {
             lastAsteroidSpawnTime = SDL_GetTicks();
         } 
 
-        std::cout << "size of used bullet and used ast: " << bulletUsed.size() << " " << astreoidsUsed.size() << std::endl;
-        std::cout << "size of NOTused bullet and NOTused ast: " << bulletNotUsed.size() << " " << astreoidsNotUsed.size() << std::endl;
-
         frameTime = SDL_GetTicks() - frameStart;
         if (frameDelay > frameTime) {
             SDL_Delay(frameDelay - frameTime);

@@ -9,6 +9,7 @@
 #include <ctime>
 #include <iostream>
 #include <array>
+#include <limits>
 #include "Player.h"
 #include "Bullet.h"
 #include "Astreoid.h"
@@ -45,6 +46,8 @@ class Engine {
 
         void updatePlayerPosition(std::unordered_map<InputHandler::Keys, bool>& keyStates, Player& player);
 
+        int checkPlayerOutofBounds(const Player& player);
+
         void handleShooting(std::unordered_map<InputHandler::Keys, bool>& keyStates, Player& player, std::list<Bullet>& used, std::list<Bullet>& notUsed);
 
         void updateBulletPositions(std::list<Bullet>& used, std::list<Bullet>& notUsed);
@@ -55,7 +58,9 @@ class Engine {
 
         bool checkCollisionsSAT(const Entity& e1, const Entity& e2);
 
-        bool checkCircularCollision(const Entity& circleEntity, const Entity& rectEntity);
+        bool checkCircRectCollision(const Entity& circleEntity, const Entity& rectEntity);
+
+        bool checkCircCircCollision(const Entity& e1, const Entity& e2);
 
         void projectOntoAxis(const std::array<SDL_Point, 4>& vertices, const SDL_Point& axis, float& min, float& max);
 

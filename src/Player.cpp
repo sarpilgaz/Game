@@ -14,7 +14,7 @@ void Player::updatePos() {
     entityRect.y += vy;
 
     float targetAngle = atan2(vy, vx) + M_PI_2;
-    float rotationSpeed = 0.08f;
+    float rotationSpeed = 0.04f;
     float deltaAngle = targetAngle - angle;
     if (deltaAngle > M_PI) deltaAngle -= 2 * M_PI;
     if (deltaAngle < -M_PI) deltaAngle += 2 * M_PI;

@@ -45,7 +45,6 @@ float Engine::randomFloat(float min, float max) {
 }
 
 void Engine::calculateRandomAstreoidVelocity(Astreoid& astreoid, float targetX, float targetY) {
-    //determine direction list & normalize list
     float dx = targetX - astreoid.entityRect.x;
     float dy = targetY - astreoid.entityRect.y;
     float length = std::sqrt(dx * dx + dy * dy);
@@ -80,7 +79,57 @@ void Engine::updatePlayerPosition(std::unordered_map<InputHandler::Keys, bool>& 
     }
 
     player.updatePos();
+    int boundcheck = checkPlayerOutofBounds(player);
+    switch (boundcheck) {
+        case 0:
+            player.entityRect.y = SCREEN_HEIGHT + 10;
+            break;
+        case 1:
+            player.entityRect.y = -10;
+            break;
+        case 2:
+            player.entityRect.x = SCREEN_WIDTH + 10;
+            break;
+        case 3:
+            player.entityRect.x = -15;
+            break;
+    }
 
+}
+
+int Engine::checkPlayerOutofBounds(const Player& player) {
+    /*
+    returns which side the player went out of bound from, as:
+        0 for top, 1 for bottom, 2 for left and 3 for right.
+        -1 for inbounds  
+    */
+    std::array<SDL_Point, 4> vertices = player.getVertices();
+    float maxX, maxY = std::numeric_limits<float>::lowest();
+    /*
+    because of arcane reasons beyond my mortal comprehension, if the following two initilizations are made in a single line, minX will be 
+    incorrectly assigned a value of 0.04, but minY will be correctly initialized.
+
+    Since having a debate with god, a.k.a the gnu c++ compiler, is futile and will surely lead to my decent into madness, I will instead leave this message 
+    for my future self, or whoever is unfortunate enough to stumble here:
+
+    DO NOT change the following 2 lines. DO NOT question them. DO NOT anger the c++ deities.
+    */
+    float minX = std::numeric_limits<float>::max();
+    float minY = std::numeric_limits<float>::max();
+
+    for (auto& v : vertices) {
+        if (v.x > maxX) maxX = v.x;
+        if (v.x < minX) {minX = v.x;} 
+
+        if (v.y > maxY) maxY = v.y;
+        if (v.y < minY) minY = v.y;
+    }
+
+    if (maxY <= -15) return 0;
+    else if (minY >= SCREEN_HEIGHT + 15) return 1;
+    else if (maxX <= 0.5) return 2;
+    else if (minX >= SCREEN_WIDTH + 15) return 3;
+    else return -1;
 }
 
 void Engine::handleShooting(std::unordered_map<InputHandler::Keys, bool>& keyStates, Player& player, std::list<Bullet>& used, std::list<Bullet>& notUsed) {
@@ -138,9 +187,9 @@ void Engine::updateAstreoidPositions(std::list<Astreoid>& used, std::list<Astreo
     }
 }
 
-void Engine::spawnAstreoidRandomly(std::list<Astreoid>& astreoidsUsed, std::list<Astreoid>& astreoidsUnUsed, SDL_Renderer* renderer) {
+void Engine::spawnAstreoidRandomly(std::list<Astreoid>& astreoidsUsed, std::list<Astreoid>& astreoidsUnused, SDL_Renderer* renderer) {
 
-    Astreoid ast = astreoidsUnUsed.empty() ? Astreoid(renderer) : std::move(astreoidsUnUsed.back());
+    Astreoid ast = astreoidsUnused.empty() ? Astreoid(renderer) : std::move(astreoidsUnused.back());
     int side = rand() % 4;
 
     switch(side) {
@@ -166,15 +215,15 @@ void Engine::spawnAstreoidRandomly(std::list<Astreoid>& astreoidsUsed, std::list
             break;       
     }
 
-    if (!astreoidsUnUsed.empty()) {
-        astreoidsUnUsed.pop_back();
+    if (!astreoidsUnused.empty()) {
+        astreoidsUnused.pop_back();
     }
 
     astreoidsUsed.push_back(ast);
 
 }
 
-bool Engine::checkCircularCollision(const Entity& circleEntity, const Entity& rectEntity) {
+bool Engine::checkCircRectCollision(const Entity& circleEntity, const Entity& rectEntity) {
     float circleCenterX = circleEntity.entityRect.x + circleEntity.entityRect.w/2;
     float circleCenterY = circleEntity.entityRect.y + circleEntity.entityRect.h/2;
     float radius = circleEntity.entityRect.w/2; // astreoid rectangles are squares
@@ -239,11 +288,23 @@ void Engine::projectOntoAxis(const std::array<SDL_Point, 4>& vertices, const SDL
     }
 }
 
+bool Engine::checkCircCircCollision(const Entity& e1, const Entity& e2) {
+    float xe1 = e1.entityRect.x + e1.entityRect.w/2;
+    float ye1 = e1.entityRect.y + e1.entityRect.h/2;
+    float re1 = e1.entityRect.w/2;
+
+    float xe2 = e2.entityRect.x + e2.entityRect.w/2;
+    float ye2 = e2.entityRect.y + e2.entityRect.h/2;
+    float re2 = e2.entityRect.w/2;
+    
+    return (((xe2 - xe1) * (xe2 - xe1) + (ye2 - ye1) * (ye2 - ye1)) <= ((re1 + re2) * (re1 + re2)) );
+}
+
 void Engine::handleCollision(std::list<Astreoid>& astreoidsUsed, std::list<Bullet>& bulletsUsed, 
                              std::list<Astreoid>& astreoidsNotUsed, std::list<Bullet>& bulletsNotUsed,
                              std::list<Astreoid>::iterator& ait, std::list<Bullet>::iterator& bit, bool& erased) {
 
-    if (checkCircularCollision(*ait, *bit)) {
+    if (checkCircCircCollision(*ait, *bit)) {
         bulletsNotUsed.push_back(*bit);
         astreoidsNotUsed.push_back(*ait);
         bit = bulletsUsed.erase(bit); // Erase the bullet and update iterator

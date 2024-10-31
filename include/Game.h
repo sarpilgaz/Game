@@ -46,13 +46,15 @@ private:
     list<Bullet> bulletNotUsed;
     
     bool running;
+    bool bulletShot = false;
+    bool astreoidSpawnTime = false;
     const int ASTREOID_SPAWN_INTERVAL = 3000; // 3000 milliseconds = 3 seconds
     Uint32 lastAsteroidSpawnTime = 0;
     const int FPS = 60;
     const int frameDelay = 1000 / FPS;
     Uint32 frameStart;
     int frameTime;
-    bool bulletShot = false;
+
 };
 
 #endif

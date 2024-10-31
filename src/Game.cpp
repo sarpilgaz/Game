@@ -32,8 +32,6 @@ bool Game::init() {
     player.setTex(SDL_CreateTextureFromSurface(renderer, tmpSurface));
     SDL_FreeSurface(tmpSurface);
 
-    Astreoid ast(renderer);
-    astreoidsUsed.push_back(ast);
     running = true;
     return true;
 }
@@ -47,9 +45,10 @@ void Game::run() {
         render();
         
         if (SDL_GetTicks() - lastAsteroidSpawnTime >= ASTREOID_SPAWN_INTERVAL) {
-            engine.spawnAstreoid(astreoidsUsed, astreoidsNotUsed, renderer);
+            astreoidSpawnTime = true;
             lastAsteroidSpawnTime = SDL_GetTicks();
-        } 
+        }
+        else astreoidSpawnTime = false;
 
         frameTime = SDL_GetTicks() - frameStart;
         if (frameDelay > frameTime) {
@@ -63,7 +62,7 @@ void Game::handleEvents() {
 }
 
 void Game::update() {
-   engine.updateGamestate(keyStates, player, bulletUsed, bulletNotUsed, astreoidsUsed, astreoidsNotUsed, renderer); 
+   engine.updateGamestate(keyStates, player, bulletUsed, bulletNotUsed, astreoidsUsed, astreoidsNotUsed, astreoidSpawnTime, renderer); 
 }
 
 void Game::render() {

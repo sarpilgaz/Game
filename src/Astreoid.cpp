@@ -1,8 +1,10 @@
 #include "Astreoid.h"
 
-Astreoid::Astreoid(SDL_Renderer* renderer) {
+Astreoid::Astreoid(float x, float y, float vx, float vy, SDL_Renderer* renderer) {
+    this->vx = vx;
+    this->vy = vy;
     angle = 0.0f;
-    entityRect = {200, 200, 64, 64};
+    entityRect = {static_cast<int>(x), static_cast<int>(y), 64, 64};
     SDL_Surface* tmpSurf = IMG_Load("assets/sprites/Sprite-0002.png");
     setTex(SDL_CreateTextureFromSurface(renderer, tmpSurf));
     SDL_FreeSurface(tmpSurf);

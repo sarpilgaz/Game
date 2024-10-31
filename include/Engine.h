@@ -23,9 +23,8 @@ class Engine {
                             std::list<Bullet>& bulletsNotUsed,
                             std::list<Astreoid>& astreoidsUsed,
                             std::list<Astreoid>& astreoidsNotUsed,
+                            bool spawnAstreoid,
                             SDL_Renderer* renderer);
-
-        void spawnAstreoid(std::list<Astreoid>& astreoidsUsed, std::list<Astreoid>& astreoidsUnUsed, SDL_Renderer* renderer);
 
         
 
@@ -42,7 +41,7 @@ class Engine {
 
         float randomFloat(float min, float max);
 
-        void calculateRandomAstreoidVelocity(Astreoid& astreoid, float targetX, float targetY);
+        void calculateRandomAstreoidVelocity(float& velX, float& velY, float x, float y, float targetX, float targetY);
 
         void updatePlayerPosition(std::unordered_map<InputHandler::Keys, bool>& keyStates, Player& player);
 
@@ -64,9 +63,8 @@ class Engine {
 
         void projectOntoAxis(const std::array<SDL_Point, 4>& vertices, const SDL_Point& axis, float& min, float& max);
 
-        void handleCollision(std::list<Astreoid>& astreoidsUsed, std::list<Bullet>& bulletsUsed, 
-                                     std::list<Astreoid>& astreoidsNotUsed, std::list<Bullet>& bulletsNotUsed,
-                                     std::list<Astreoid>::iterator& ait, std::list<Bullet>::iterator& bit, bool& erased);
+        void handleBulletAstreoidCollision(std::list<Bullet>& bulletsUsed, std::list<Bullet>& bulletsNotUsed,
+                                           std::list<Astreoid>& astreoidsUsed, std::list<Astreoid>& astreoidsNotUsed);
 };
 
 #endif

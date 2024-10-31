@@ -7,7 +7,7 @@
 class Astreoid : public Entity {
 
 public:
-    Astreoid(SDL_Renderer* renderer);
+    Astreoid(float x, float y, float vx, float vy, SDL_Renderer* renderer);
     void spinAstreoid();
 private:
     float SPIN_SPEED = 0.016f;

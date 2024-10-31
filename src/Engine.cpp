@@ -6,6 +6,7 @@ void Engine::updateGamestate(std::unordered_map<InputHandler::Keys, bool>& keyst
                             std::list<Bullet>& bulletsNotUsed,
                             std::list<Astreoid>& astreoidsUsed,
                             std::list<Astreoid>& astreoidsNotUsed,
+                            bool spawnAstreoid,
                             SDL_Renderer* renderer) 
     {
         updatePlayerPosition(keystates, player);
@@ -14,46 +15,38 @@ void Engine::updateGamestate(std::unordered_map<InputHandler::Keys, bool>& keyst
 
         updateBulletPositions(bulletsUsed, bulletsNotUsed);
 
+        //extra, for testing purposes
         if(keystates[InputHandler::U]) {
             spawnAstreoidRandomly(astreoidsUsed, astreoidsNotUsed, renderer);
         }
 
         updateAstreoidPositions(astreoidsUsed, astreoidsNotUsed);   
 
-        for (auto ait = astreoidsUsed.begin(); ait != astreoidsUsed.end();) {
-            bool asteroidErased = false;
-            for (auto bit = bulletsUsed.begin(); bit != bulletsUsed.end();) {
-                handleCollision(astreoidsUsed, bulletsUsed, astreoidsNotUsed, bulletsNotUsed, ait, bit, asteroidErased);
-            }
-            if (asteroidErased) {
-                break;
-            } else {
-                ++ait;
-            }
+        handleBulletAstreoidCollision(bulletsUsed, bulletsNotUsed, astreoidsUsed, astreoidsNotUsed);
+
+        //spawn astreoids after everything else?
+        if (spawnAstreoid) {
+            spawnAstreoidRandomly(astreoidsUsed, astreoidsNotUsed, renderer);
         }
-            
+
     }
 
-
-void Engine::spawnAstreoid(std::list<Astreoid>& astreoidsUsed, std::list<Astreoid>& astreoidsUnUsed, SDL_Renderer* renderer) {
-    spawnAstreoidRandomly(astreoidsUsed, astreoidsUnUsed, renderer);
-}
 
 // Generate a random float between min and max
 float Engine::randomFloat(float min, float max) {
     return min + static_cast<float>(rand()) / (static_cast<float>(RAND_MAX / (max - min)));
 }
 
-void Engine::calculateRandomAstreoidVelocity(Astreoid& astreoid, float targetX, float targetY) {
-    float dx = targetX - astreoid.entityRect.x;
-    float dy = targetY - astreoid.entityRect.y;
+void Engine::calculateRandomAstreoidVelocity(float& velX, float& velY, float x, float y, float targetX, float targetY) {
+    float dx = targetX - x;
+    float dy = targetY - y;
     float length = std::sqrt(dx * dx + dy * dy);
     dx /= length;
     dy /= length;
 
     float velMagnitude = randomFloat(MIN_ASTREOID_VELOCITY, MAX_ASTREOID_VELOCITY);
-    astreoid.setVx(dx * velMagnitude);
-    astreoid.setVy(dy * velMagnitude);
+    velX = dx * velMagnitude;
+    velY = dy * velMagnitude;
 }
 
 void Engine::updatePlayerPosition(std::unordered_map<InputHandler::Keys, bool>& keyStates, Player& player) {
@@ -189,38 +182,46 @@ void Engine::updateAstreoidPositions(std::list<Astreoid>& used, std::list<Astreo
 
 void Engine::spawnAstreoidRandomly(std::list<Astreoid>& astreoidsUsed, std::list<Astreoid>& astreoidsUnused, SDL_Renderer* renderer) {
 
-    Astreoid ast = astreoidsUnused.empty() ? Astreoid(renderer) : std::move(astreoidsUnused.back());
+    float astX, astY, astVx, astVy;
+    //Astreoid ast = astreoidsUnused.empty() ? Astreoid(renderer) : std::move(astreoidsUnused.back());
     int side = rand() % 4;
 
     switch(side) {
         case 0: //top
-            ast.entityRect.x = randomFloat(-ASTREOID_SPAWN_OFFSET, SCREEN_WIDTH + ASTREOID_SPAWN_OFFSET);
-            ast.entityRect.y = -ASTREOID_SPAWN_OFFSET;
-            calculateRandomAstreoidVelocity(ast, randomFloat(0, SCREEN_WIDTH), SCREEN_HEIGHT / 2);
+            astX = randomFloat(-ASTREOID_SPAWN_OFFSET, SCREEN_WIDTH + ASTREOID_SPAWN_OFFSET);
+            astY = -ASTREOID_SPAWN_OFFSET;
+            calculateRandomAstreoidVelocity(astVx, astVy, astX, astY,  randomFloat(0, SCREEN_WIDTH), SCREEN_HEIGHT / 2);
             break;
         case 1: //right
-            ast.entityRect.x = SCREEN_WIDTH + ASTREOID_SPAWN_OFFSET;
-            ast.entityRect.y = randomFloat(-ASTREOID_SPAWN_OFFSET, SCREEN_HEIGHT+ ASTREOID_SPAWN_OFFSET);
-            calculateRandomAstreoidVelocity(ast, 0, randomFloat(0, SCREEN_HEIGHT));
+            astX = SCREEN_WIDTH + ASTREOID_SPAWN_OFFSET;
+            astY = randomFloat(-ASTREOID_SPAWN_OFFSET, SCREEN_HEIGHT+ ASTREOID_SPAWN_OFFSET);
+            calculateRandomAstreoidVelocity(astVx, astVy, astX, astY, 0, randomFloat(0, SCREEN_HEIGHT));
             break;
         case 2: //bottom
-            ast.entityRect.x = randomFloat(-ASTREOID_SPAWN_OFFSET, SCREEN_WIDTH + ASTREOID_SPAWN_OFFSET);
-            ast.entityRect.y = SCREEN_HEIGHT +ASTREOID_SPAWN_OFFSET;
-            calculateRandomAstreoidVelocity(ast, randomFloat(0, SCREEN_WIDTH), 0);
+            astX= randomFloat(-ASTREOID_SPAWN_OFFSET, SCREEN_WIDTH + ASTREOID_SPAWN_OFFSET);
+            astY = SCREEN_HEIGHT +ASTREOID_SPAWN_OFFSET;
+            calculateRandomAstreoidVelocity(astVx, astVy, astX, astY, randomFloat(0, SCREEN_WIDTH), 0);
             break;
         case 3: //left
-            ast.entityRect.x = -ASTREOID_SPAWN_OFFSET;
-            ast.entityRect.y = randomFloat(-ASTREOID_SPAWN_OFFSET, SCREEN_HEIGHT + ASTREOID_SPAWN_OFFSET);
-            calculateRandomAstreoidVelocity(ast, SCREEN_WIDTH, randomFloat(0, SCREEN_HEIGHT)); 
+            astX = -ASTREOID_SPAWN_OFFSET;
+            astY = randomFloat(-ASTREOID_SPAWN_OFFSET, SCREEN_HEIGHT + ASTREOID_SPAWN_OFFSET);
+            calculateRandomAstreoidVelocity(astVx, astVy, astX, astY, SCREEN_WIDTH, randomFloat(0, SCREEN_HEIGHT)); 
             break;       
     }
 
-    if (!astreoidsUnused.empty()) {
-        astreoidsUnused.pop_back();
+    if (astreoidsUnused.empty()) {
+        Astreoid ast(astX, astY, astVx, astVy, renderer);
+        astreoidsUsed.push_back(ast);
     }
-
-    astreoidsUsed.push_back(ast);
-
+    else {
+        Astreoid ast = std::move(astreoidsUnused.back());
+        astreoidsUnused.pop_back();
+        ast.entityRect.x = astX;
+        ast.entityRect.y = astY;
+        ast.setVx(astVx);
+        ast.setVy(astVy);
+        astreoidsUsed.push_back(ast);
+    }
 }
 
 bool Engine::checkCircRectCollision(const Entity& circleEntity, const Entity& rectEntity) {
@@ -297,20 +298,39 @@ bool Engine::checkCircCircCollision(const Entity& e1, const Entity& e2) {
     float ye2 = e2.entityRect.y + e2.entityRect.h/2;
     float re2 = e2.entityRect.w/2;
     
+    //formula to check if two circles are touching
     return (((xe2 - xe1) * (xe2 - xe1) + (ye2 - ye1) * (ye2 - ye1)) <= ((re1 + re2) * (re1 + re2)) );
 }
 
-void Engine::handleCollision(std::list<Astreoid>& astreoidsUsed, std::list<Bullet>& bulletsUsed, 
-                             std::list<Astreoid>& astreoidsNotUsed, std::list<Bullet>& bulletsNotUsed,
-                             std::list<Astreoid>::iterator& ait, std::list<Bullet>::iterator& bit, bool& erased) {
+void Engine::handleBulletAstreoidCollision(std::list<Bullet>& bulletsUsed, std::list<Bullet>& bulletsNotUsed,
+                                           std::list<Astreoid>& astreoidsUsed, std::list<Astreoid>& astreoidsNotUsed) {
+    for (auto ait = astreoidsUsed.begin(); ait != astreoidsUsed.end(); ) {
+        bool asteroidErased = false;
 
-    if (checkCircCircCollision(*ait, *bit)) {
-        bulletsNotUsed.push_back(*bit);
-        astreoidsNotUsed.push_back(*ait);
-        bit = bulletsUsed.erase(bit); // Erase the bullet and update iterator
-        ait = astreoidsUsed.erase(ait); // Erase the asteroid and update iterator
-        erased = true;
-    } else {
-        ++bit; // If no collision, just increment the bullet iterator
+        for (auto bit = bulletsUsed.begin(); bit != bulletsUsed.end(); ) {
+            if (checkCircCircCollision(*ait, *bit)) {
+
+                bulletsNotUsed.push_back(*bit);
+                astreoidsNotUsed.push_back(*ait);
+
+                // Erase the bullet and update its iterator
+                bit = bulletsUsed.erase(bit);
+
+                // Erase the asteroid, update the iterator and set the flag to true
+                ait = astreoidsUsed.erase(ait);
+                asteroidErased = true;
+
+                // Since asteroid is erased, exit the inner loop
+                break;
+            } else {
+                // No collision, increment bullet iterator
+                ++bit;
+            }
+        }
+
+        // Only increment asteroid iterator if it was not erased
+        if (!asteroidErased) {
+            ++ait;
+        }
     }
 }

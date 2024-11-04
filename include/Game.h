@@ -6,7 +6,6 @@
 #include <unordered_map>
 #include <vector>
 #include <list>
-#include "Logger.h"
 #include "Renderer.h"
 #include "InputHandler.h"
 #include "Player.h"
@@ -35,15 +34,14 @@ public:
 private:
     SDL_Window* window;
     SDL_Renderer* renderer;
-    Logger logger;
     Renderer gameRenderer;
     InputHandler inputHandler;
     Player player;
     Engine engine;
-    list<Astreoid> astreoidsUsed;
-    list<Astreoid> astreoidsNotUsed;
-    list<Bullet> bulletUsed;
-    list<Bullet> bulletNotUsed;
+    std::list<Astreoid> astreoidsUsed;
+    std::list<Astreoid> astreoidsNotUsed;
+    std::list<Bullet> bulletUsed;
+    std::list<Bullet> bulletNotUsed;
     
     bool running;
     bool bulletShot = false;

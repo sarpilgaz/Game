@@ -304,33 +304,27 @@ bool Engine::checkCircCircCollision(const Entity& e1, const Entity& e2) {
 
 void Engine::handleBulletAstreoidCollision(std::list<Bullet>& bulletsUsed, std::list<Bullet>& bulletsNotUsed,
                                            std::list<Astreoid>& astreoidsUsed, std::list<Astreoid>& astreoidsNotUsed) {
-    for (auto ait = astreoidsUsed.begin(); ait != astreoidsUsed.end(); ) {
-        bool asteroidErased = false;
+    // Temporary lists to collect iterators to objects to be removed after collision checks
+    std::list<std::list<Bullet>::iterator> bulletsToRemove;
+    std::list<std::list<Astreoid>::iterator> astreoidsToRemove;
 
-        for (auto bit = bulletsUsed.begin(); bit != bulletsUsed.end(); ) {
-            if (checkCircCircCollision(*ait, *bit)) {
+    for (auto aIt = astreoidsUsed.begin(); aIt != astreoidsUsed.end(); ++aIt) {
 
-                bulletsNotUsed.push_back(*bit);
-                astreoidsNotUsed.push_back(*ait);
-
-                // Erase the bullet and update its iterator
-                bit = bulletsUsed.erase(bit);
-
-                // Erase the asteroid, update the iterator and set the flag to true
-                ait = astreoidsUsed.erase(ait);
-                asteroidErased = true;
-
-                // Since asteroid is erased, exit the inner loop
-                break;
-            } else {
-                // No collision, increment bullet iterator
-                ++bit;
+        for (auto bIt = bulletsUsed.begin(); bIt != bulletsUsed.end(); ++bIt) {
+            if (checkCircCircCollision(*aIt, *bIt)) {
+                bulletsToRemove.push_back(bIt);
+                astreoidsToRemove.push_back(aIt);
+                
+                break; // Stop checking bullets for this asteroid, as it's already "destroyed"
             }
         }
+    }
 
-        // Only increment asteroid iterator if it was not erased
-        if (!asteroidErased) {
-            ++ait;
-        }
+    // Move bullets and asteroids that collided to the unused lists using iterators
+    for (auto bIt : bulletsToRemove) {
+        bulletsNotUsed.splice(bulletsNotUsed.end(), bulletsUsed, bIt);
+    }
+    for (auto aIt : astreoidsToRemove) {
+        astreoidsNotUsed.splice(astreoidsNotUsed.end(), astreoidsUsed, aIt);
     }
 }

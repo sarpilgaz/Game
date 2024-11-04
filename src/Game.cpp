@@ -1,6 +1,6 @@
 #include "Game.h"
 
-Game::Game() : running(false), window(nullptr), renderer(nullptr), logger("logs.txt") {}
+Game::Game() : running(false), window(nullptr), renderer(nullptr) {}
 
 
 

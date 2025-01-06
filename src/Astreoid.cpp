@@ -18,3 +18,22 @@ void Astreoid::spinAstreoid() {
         angle -= 2 * M_PI;
     }
 }
+
+std::vector<SDL_Point> Astreoid::getSpriteVertices() const {
+    std::vector<SDL_Point> vertices;
+    float centerX = entityRect.x + entityRect.w / 2;
+    float centerY = entityRect.y + entityRect.h / 2;
+    float radius = entityRect.w / 2;
+    int segments = 16;
+
+
+    const float angleStep = 2 * M_PI / segments; // Divide the circle into segments
+    for (int i = 0; i < segments; ++i) {
+        float angle = i * angleStep;
+        vertices.push_back({
+            static_cast<int>(centerX + radius * cos(angle)),
+            static_cast<int>(centerY + radius * sin(angle))
+        });
+    }
+    return vertices;
+}

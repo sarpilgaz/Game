@@ -4,6 +4,7 @@
 #include <SDL_image.h>
 #include <SDL2/SDL.h>
 #include <cmath>
+#include <vector>
 #include <array>
 
 class Entity {
@@ -16,7 +17,9 @@ protected:
 public:
     Entity() : vx(0), vy(0) {}
     SDL_Rect entityRect;
-    std::array<SDL_Point, 4> getVertices() const;
+    std::array<SDL_Point, 4> getRectVertices() const;
+
+    virtual std::vector<SDL_Point> getSpriteVertices() const = 0;
 
     int getVx() const { return vx; }
     int getVy() const { return vy; }

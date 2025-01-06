@@ -4,12 +4,12 @@
 #include <SDL2/SDL.h>
 #include <unordered_map>
 #include <list>
-#include <list>
 #include <cmath>
 #include <ctime>
 #include <iostream>
 #include <array>
 #include <limits>
+#include <vector>
 #include "Player.h"
 #include "Bullet.h"
 #include "Astreoid.h"
@@ -61,10 +61,14 @@ class Engine {
 
         bool checkCircCircCollision(const Entity& e1, const Entity& e2);
 
-        void projectOntoAxis(const std::array<SDL_Point, 4>& vertices, const SDL_Point& axis, float& min, float& max);
+        bool checkCircTriangleCollision(const Entity& circleEntity, const Entity& triangleEntity);
+
+        void projectOntoAxis(const std::vector<SDL_Point>& vertices, const SDL_Point& axis, float& min, float& max);
 
         void handleBulletAstreoidCollision(std::list<Bullet>& bulletsUsed, std::list<Bullet>& bulletsNotUsed,
                                            std::list<Astreoid>& astreoidsUsed, std::list<Astreoid>& astreoidsNotUsed);
+
+        void handleAstreoidPlayerCollision(Player& player, std::list<Astreoid>& astreoidsUsed, std::list<Astreoid>& astreoidsNotUsed);
 };
 
 #endif

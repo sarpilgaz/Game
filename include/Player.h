@@ -2,6 +2,7 @@
 #define PLAYER_H
 
 #include <SDL2/SDL.h>
+#include <vector>
 #include "Entity.h"
 
 class Player : public Entity {
@@ -12,9 +13,10 @@ public:
     void setHealth(int newHealth) { health = newHealth; }
     void updatePos();
     void getTipCoord(float& x, float& y);
+    std::vector<SDL_Point> getSpriteVertices() const override;
 
 private:
-    int health;
+    int health = 3;
     const float SHIP_LENGTH = 16.0f;
 };
 

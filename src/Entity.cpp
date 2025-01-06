@@ -13,7 +13,7 @@ void Entity::updatePos() {
     entityRect.y += vy;
 }
 
-std::array<SDL_Point, 4> Entity::getVertices() const {
+std::array<SDL_Point, 4> Entity::getRectVertices() const {
     std::array<SDL_Point, 4> vertices;
     float cosA = cos(angle * M_PI / 180.0);
     float sinA = sin(angle * M_PI / 180.0);

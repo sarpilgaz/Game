@@ -6,7 +6,7 @@ Player::Player(){
     vy = 0.0f;
     angle = 0.0f; 
     entityRect = {150, 150, 32, 32};
-    health = 100;
+    health = 3;
 }
 
 void Player::updatePos() {
@@ -36,7 +36,24 @@ void Player::getTipCoord(float& x, float& y) {
 
     const float OFFSET = 5.0f;
 
-    // Calculate the tip coordinates using the center as the origin
-    x = centerX + (SHIP_LENGTH + OFFSET) * cos(angle - M_PI_2) - 4; //adjust by half bullet sprite
-    y = centerY + (SHIP_LENGTH + OFFSET) * sin(angle - M_PI_2) - 4; //adjust by half bullet sprite
+    float tipX = centerX + (SHIP_LENGTH + OFFSET) * cos(angle - M_PI_2);
+    float tipY = centerY + (SHIP_LENGTH + OFFSET) * sin(angle - M_PI_2);
+
+    // Final position accounting for bullet sprite size dynamically (centered bullets)
+    const float BULLET_SIZE = 8.0f; // Example bullet size
+    x = tipX - BULLET_SIZE / 2;
+    y = tipY - BULLET_SIZE / 2;
+}
+
+std::vector<SDL_Point> Player::getSpriteVertices() const {
+    float centerX = entityRect.x + entityRect.w / 2;
+    float centerY = entityRect.y + entityRect.h / 2;
+
+    SDL_Point tip = {centerX + SHIP_LENGTH * cos(angle - M_PI_2), centerY + SHIP_LENGTH * sin(angle - M_PI_2) };
+
+    SDL_Point leftBase = {centerX + entityRect.w * cos(angle + M_PI_2 * 2 / 3), centerY + entityRect.w * sin(angle + M_PI_2 * 2 / 3)};
+
+    SDL_Point rightBase = {centerX + entityRect.w * cos(angle - M_PI_2 * 2 / 3), centerY + entityRect.w * sin(angle - M_PI_2 * 2 / 3)};
+
+    return {tip, leftBase, rightBase};
 }

@@ -24,6 +24,8 @@ void Engine::updateGamestate(std::unordered_map<InputHandler::Keys, bool>& keyst
 
         handleBulletAstreoidCollision(bulletsUsed, bulletsNotUsed, astreoidsUsed, astreoidsNotUsed);
 
+        handleAstreoidPlayerCollision(player, astreoidsUsed, astreoidsNotUsed);
+
         //spawn astreoids after everything else?
         if (spawnAstreoid) {
             spawnAstreoidRandomly(astreoidsUsed, astreoidsNotUsed, renderer);
@@ -75,16 +77,16 @@ void Engine::updatePlayerPosition(std::unordered_map<InputHandler::Keys, bool>& 
     int boundcheck = checkPlayerOutofBounds(player);
     switch (boundcheck) {
         case 0:
-            player.entityRect.y = SCREEN_HEIGHT + 10;
+            player.entityRect.y = SCREEN_HEIGHT + 5;
             break;
         case 1:
-            player.entityRect.y = -10;
+            player.entityRect.y = -5;
             break;
         case 2:
-            player.entityRect.x = SCREEN_WIDTH + 10;
+            player.entityRect.x = SCREEN_WIDTH + 5;
             break;
         case 3:
-            player.entityRect.x = -15;
+            player.entityRect.x = -5;
             break;
     }
 
@@ -96,7 +98,7 @@ int Engine::checkPlayerOutofBounds(const Player& player) {
         0 for top, 1 for bottom, 2 for left and 3 for right.
         -1 for inbounds  
     */
-    std::array<SDL_Point, 4> vertices = player.getVertices();
+    std::array<SDL_Point, 4> vertices = player.getRectVertices();
     float maxX, maxY = std::numeric_limits<float>::lowest();
     /*
     because of arcane reasons beyond my mortal comprehension, if the following two initilizations are made in a single line, minX will be 
@@ -239,24 +241,99 @@ bool Engine::checkCircRectCollision(const Entity& circleEntity, const Entity& re
     return (distanceX * distanceX + distanceY * distanceY) < (radius * radius);
 }
 
-bool Engine::checkCollisionsSAT(const Entity& e1, const Entity& e2) {
-    auto vertices1 = e1.getVertices();
-    auto vertices2 = e2.getVertices();
+bool Engine::checkCircTriangleCollision(const Entity& circleEntity, const Entity& triangleEntity) {
+    // Circle properties
+    float circleCenterX = circleEntity.entityRect.x + circleEntity.entityRect.w / 2;
+    float circleCenterY = circleEntity.entityRect.y + circleEntity.entityRect.h / 2;
+    float radius = circleEntity.entityRect.w / 2;
 
-    // Create an array to store the axes for both entities
-    std::array<SDL_Point, 8> axes = {
-        // For the first rectangle (e1)
-        SDL_Point{vertices1[1].y - vertices1[0].y, vertices1[0].x - vertices1[1].x}, // Perpendicular to edge (0 to 1)
-        SDL_Point{vertices1[2].y - vertices1[1].y, vertices1[1].x - vertices1[2].x}, // Perpendicular to edge (1 to 2)
-        SDL_Point{vertices1[3].y - vertices1[2].y, vertices1[2].x - vertices1[3].x}, // Perpendicular to edge (2 to 3)
-        SDL_Point{vertices1[0].y - vertices1[3].y, vertices1[3].x - vertices1[0].x}, // Perpendicular to edge (3 to 0)
+    // Get triangle vertices
+    auto vertices = triangleEntity.getSpriteVertices(); // Expects 3 vertices for triangle
 
-        // For the second rectangle (e2)
-        SDL_Point{vertices2[1].y - vertices2[0].y, vertices2[0].x - vertices2[1].x}, // Perpendicular to edge (0 to 1)
-        SDL_Point{vertices2[2].y - vertices2[1].y, vertices2[1].x - vertices2[2].x}, // Perpendicular to edge (1 to 2)
-        SDL_Point{vertices2[3].y - vertices2[2].y, vertices2[2].x - vertices2[3].x}, // Perpendicular to edge (2 to 3)
-        SDL_Point{vertices2[0].y - vertices2[3].y, vertices2[3].x - vertices2[0].x}  // Perpendicular to edge (3 to 0)
+    // Step 1: Check if the circle center is inside the triangle
+    auto isPointInTriangle = [](float px, float py, const SDL_Point& v1, const SDL_Point& v2, const SDL_Point& v3) {
+        // Compute barycentric coordinates
+        float dX = px - v3.x;
+        float dY = py - v3.y;
+        float dX21 = v3.x - v2.x;
+        float dY12 = v1.y - v3.y;
+        float D = dY12 * (v2.x - v3.x) + (v1.x - v3.x) * (v2.y - v3.y);
+        float s = dY12 * dX + (v1.x - v3.x) * dY;
+        float t = (v3.y - v2.y) * dX + dX21 * dY;
+
+        if (D < 0) {
+            s = -s;
+            t = -t;
+            D = -D;
+        }
+        return s > 0 && t > 0 && (s + t) <= D;
     };
+
+    if (isPointInTriangle(circleCenterX, circleCenterY, vertices[0], vertices[1], vertices[2])) {
+        return true; // Circle center inside triangle
+    }
+
+    // Step 2: Check if the circle intersects any of the triangle edges
+    auto pointSegmentDistanceSquared = [](float px, float py, const SDL_Point& a, const SDL_Point& b) {
+        float vx = b.x - a.x;
+        float vy = b.y - a.y;
+        float ux = px - a.x;
+        float uy = py - a.y;
+
+        float lenSq = vx * vx + vy * vy;
+        float proj = (ux * vx + uy * vy) / lenSq;
+        proj = std::max(0.0f, std::min(1.0f, proj));
+
+        float closestX = a.x + proj * vx;
+        float closestY = a.y + proj * vy;
+
+        float dx = closestX - px;
+        float dy = closestY - py;
+
+        return dx * dx + dy * dy;
+    };
+
+    // Check each edge
+    for (int i = 0; i < 3; ++i) {
+        float distSq = pointSegmentDistanceSquared(
+            circleCenterX, circleCenterY,
+            vertices[i], vertices[(i + 1) % 3] // Next vertex (wraps around)
+        );
+
+        if (distSq < radius * radius) {
+            return true; // Edge intersects the circle
+        }
+    }
+
+    return false; // No collision
+}
+
+
+bool Engine::checkCollisionsSAT(const Entity& e1, const Entity& e2) {
+    //FUNCTION IS FUCKED!!!!
+    auto vertices1 = e1.getSpriteVertices();
+    auto vertices2 = e2.getSpriteVertices();
+
+    // Collect axes for both entities
+    std::vector<SDL_Point> axes;
+
+    // Get axes from the first entity's edges
+    for (size_t i = 0; i < vertices1.size(); ++i) {
+        SDL_Point edge = {
+            vertices1[(i + 1) % vertices1.size()].x - vertices1[i].x,
+            vertices1[(i + 1) % vertices1.size()].y - vertices1[i].y
+        };
+        axes.push_back({ -edge.y, edge.x }); // Perpendicular normal
+    }
+
+    // Get axes from the second entity's edges
+    for (size_t i = 0; i < vertices2.size(); ++i) {
+        SDL_Point edge = {
+            vertices2[(i + 1) % vertices2.size()].x - vertices2[i].x,
+            vertices2[(i + 1) % vertices2.size()].y - vertices2[i].y
+        };
+        axes.push_back({ -edge.y, edge.x }); // Perpendicular normal
+    }
 
     // Iterate through all axes
     for (auto& axis : axes) {
@@ -280,10 +357,10 @@ bool Engine::checkCollisionsSAT(const Entity& e1, const Entity& e2) {
     return true; // Collision detected
 }
 
-void Engine::projectOntoAxis(const std::array<SDL_Point, 4>& vertices, const SDL_Point& axis, float& min, float& max) {
-    min = max = (vertices[0].x * axis.x + vertices[0].y * axis.y);
-    for (const auto& vertex : vertices) {
-        float projection = (vertex.x * axis.x + vertex.y * axis.y);
+void Engine::projectOntoAxis(const std::vector<SDL_Point>& vertices, const SDL_Point& axis, float& min, float& max) {
+    min = max = vertices[0].x * axis.x + vertices[0].y * axis.y; // Dot product
+    for (size_t i = 1; i < vertices.size(); ++i) {
+        float projection = vertices[i].x * axis.x + vertices[i].y * axis.y;
         if (projection < min) min = projection;
         if (projection > max) max = projection;
     }
@@ -300,6 +377,21 @@ bool Engine::checkCircCircCollision(const Entity& e1, const Entity& e2) {
     
     //formula to check if two circles are touching
     return (((xe2 - xe1) * (xe2 - xe1) + (ye2 - ye1) * (ye2 - ye1)) <= ((re1 + re2) * (re1 + re2)) );
+}
+
+void Engine::handleAstreoidPlayerCollision(Player& player, std::list<Astreoid>& astreoidsUsed, std::list<Astreoid>& astreoidsNotUsed) {
+    std::list<std::list<Astreoid>::iterator> astreoidsToRemove;
+    for (auto aIt = astreoidsUsed.begin(); aIt != astreoidsUsed.end(); ++aIt) {
+        if (checkCircTriangleCollision(*aIt, player)) {
+            astreoidsToRemove.push_back(aIt);
+            player.setHealth(player.getHealth() - 1);
+            break;
+        }
+    }
+
+    for (auto aIt : astreoidsToRemove) {
+        astreoidsNotUsed.splice(astreoidsNotUsed.end(), astreoidsUsed, aIt);
+    }
 }
 
 void Engine::handleBulletAstreoidCollision(std::list<Bullet>& bulletsUsed, std::list<Bullet>& bulletsNotUsed,

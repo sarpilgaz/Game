@@ -14,9 +14,11 @@
 #include "Bullet.h"
 #include "Astreoid.h"
 #include "InputHandler.h"
+#include "StateManager.h"
 
 class Engine {
     public:
+        Engine(StateManager& sm) : stateManager(sm) {}
         void updateGamestate(std::unordered_map<InputHandler::Keys, bool>& keystates, 
                             Player& player,
                             std::list<Bullet>& bulletsUsed,
@@ -29,6 +31,7 @@ class Engine {
         
 
     private:
+        StateManager& stateManager;
         bool bulletShot = false;
         const float MAX_VELOCITY = 3.0f;
         const float VELOCITY_INCREMENT = 0.4f;
@@ -65,7 +68,7 @@ class Engine {
 
         void projectOntoAxis(const std::vector<SDL_Point>& vertices, const SDL_Point& axis, float& min, float& max);
 
-        void handleBulletAstreoidCollision(std::list<Bullet>& bulletsUsed, std::list<Bullet>& bulletsNotUsed,
+        void handleBulletAstreoidCollision(Player& player, std::list<Bullet>& bulletsUsed, std::list<Bullet>& bulletsNotUsed,
                                            std::list<Astreoid>& astreoidsUsed, std::list<Astreoid>& astreoidsNotUsed);
 
         void handleAstreoidPlayerCollision(Player& player, std::list<Astreoid>& astreoidsUsed, std::list<Astreoid>& astreoidsNotUsed);

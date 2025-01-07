@@ -22,7 +22,7 @@ void Engine::updateGamestate(std::unordered_map<InputHandler::Keys, bool>& keyst
 
         updateAstreoidPositions(astreoidsUsed, astreoidsNotUsed);   
 
-        handleBulletAstreoidCollision(bulletsUsed, bulletsNotUsed, astreoidsUsed, astreoidsNotUsed);
+        handleBulletAstreoidCollision(player, bulletsUsed, bulletsNotUsed, astreoidsUsed, astreoidsNotUsed);
 
         handleAstreoidPlayerCollision(player, astreoidsUsed, astreoidsNotUsed);
 
@@ -392,9 +392,13 @@ void Engine::handleAstreoidPlayerCollision(Player& player, std::list<Astreoid>& 
     for (auto aIt : astreoidsToRemove) {
         astreoidsNotUsed.splice(astreoidsNotUsed.end(), astreoidsUsed, aIt);
     }
+
+    if (player.getHealth() <= 0) {
+        stateManager.changeState(GameState::End);
+    }
 }
 
-void Engine::handleBulletAstreoidCollision(std::list<Bullet>& bulletsUsed, std::list<Bullet>& bulletsNotUsed,
+void Engine::handleBulletAstreoidCollision(Player& player, std::list<Bullet>& bulletsUsed, std::list<Bullet>& bulletsNotUsed,
                                            std::list<Astreoid>& astreoidsUsed, std::list<Astreoid>& astreoidsNotUsed) {
     // Temporary lists to collect iterators to objects to be removed after collision checks
     std::list<std::list<Bullet>::iterator> bulletsToRemove;
@@ -406,6 +410,8 @@ void Engine::handleBulletAstreoidCollision(std::list<Bullet>& bulletsUsed, std::
             if (checkCircCircCollision(*aIt, *bIt)) {
                 bulletsToRemove.push_back(bIt);
                 astreoidsToRemove.push_back(aIt);
+
+                player.setScore(player.getScore() + 1);
                 
                 break; // Stop checking bullets for this asteroid, as it's already "destroyed"
             }

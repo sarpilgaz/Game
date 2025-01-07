@@ -12,6 +12,7 @@
 #include "Bullet.h"
 #include "Engine.h"
 #include "Astreoid.h"
+#include "StateManager.h"
 class Game {
 public:
     Game();
@@ -34,6 +35,7 @@ public:
 private:
     SDL_Window* window;
     SDL_Renderer* renderer;
+    StateManager stateManager;
     Renderer gameRenderer;
     InputHandler inputHandler;
     Player player;

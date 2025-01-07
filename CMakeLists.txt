@@ -12,12 +12,13 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${OUTPUT_DIR}")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${OUTPUT_DIR}")
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${OUTPUT_DIR}")
 
-# FIND SDL2 AND SDL2_IMAGE
+# FIND SDL2, SDL2_IMAGE, AND SDL2_TTF
 
 find_package(SDL2 REQUIRED)
 find_package(SDL2_image REQUIRED)
+find_package(SDL2_ttf REQUIRED)
 
-# Ensure SDL2 and SDL2_image were found
+# Ensure SDL2, SDL2_image, and SDL2_ttf were found
 if(NOT SDL2_FOUND)
     message(FATAL_ERROR "SDL2 not found!")
 endif()
@@ -26,11 +27,16 @@ if(NOT SDL2_image_FOUND)
     message(FATAL_ERROR "SDL2_image not found!")
 endif()
 
+if(NOT SDL2_ttf_FOUND)
+    message(FATAL_ERROR "SDL2_ttf not found!")
+endif()
+
 # SETUP INCLUDE AND LINK DIRS:
 
 include_directories(
     ${SDL2_INCLUDE_DIRS}
     ${SDL2IMAGE_INCLUDE_DIRS}
+    ${SDL2_TTF_INCLUDE_DIRS}
     ${PROJECT_SOURCE_DIR}/include
 )
 
@@ -53,6 +59,7 @@ target_link_libraries(
     SDL2::SDL2
     SDL2::SDL2main
     SDL2_image::SDL2_image
+    SDL2_ttf::SDL2_ttf
 )
 
 # COPY OVER STATIC FILES

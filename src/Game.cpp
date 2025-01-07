@@ -1,6 +1,6 @@
 #include "Game.h"
 
-Game::Game() : running(false), window(nullptr), renderer(nullptr) {}
+Game::Game() : running(false), window(nullptr), renderer(nullptr), stateManager(), gameRenderer(stateManager), engine(stateManager){}
 
 
 
@@ -33,6 +33,7 @@ bool Game::init() {
     SDL_FreeSurface(tmpSurface);
 
     running = true;
+    stateManager.changeState(GameState::Start);
     return true;
 }
 

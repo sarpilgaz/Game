@@ -42,6 +42,22 @@ class Engine {
         const int ASTREOID_SPAWN_OFFSET = 100;
 
 
+        void updateGameScene(std::unordered_map<InputHandler::Keys, bool>& keystates, 
+                            Player& player,
+                            std::list<Bullet>& bulletsUsed,
+                            std::list<Bullet>& bulletsNotUsed,
+                            std::list<Astreoid>& astreoidsUsed,
+                            std::list<Astreoid>& astreoidsNotUsed,
+                            bool spawnAstreoid,
+                            SDL_Renderer* renderer);
+
+        void restartGameState(Player& player,
+                            std::list<Bullet>& bulletsUsed,
+                            std::list<Bullet>& bulletsNotUsed,
+                            std::list<Astreoid>& astreoidsUsed,
+                            std::list<Astreoid>& astreoidsNotUsed,
+                            bool spawnAstreoid);
+
         float randomFloat(float min, float max);
 
         void calculateRandomAstreoidVelocity(float& velX, float& velY, float x, float y, float targetX, float targetY);

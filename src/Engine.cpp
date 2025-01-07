@@ -7,8 +7,33 @@ void Engine::updateGamestate(std::unordered_map<InputHandler::Keys, bool>& keyst
                             std::list<Astreoid>& astreoidsUsed,
                             std::list<Astreoid>& astreoidsNotUsed,
                             bool spawnAstreoid,
-                            SDL_Renderer* renderer) 
-    {
+                            SDL_Renderer* renderer) {
+    switch(stateManager.getState()) {
+        case GameState::Menu:
+            stateManager.handleState(player, keystates);
+            break;
+        case GameState::Start:
+            updateGameScene(keystates, player, bulletsUsed, bulletsNotUsed, astreoidsUsed, astreoidsNotUsed, spawnAstreoid, renderer);
+            break;
+        case GameState::End:
+            stateManager.handleState(player, keystates);
+            break;
+        case GameState::Restart:
+            restartGameState(player, bulletsUsed, bulletsNotUsed, astreoidsUsed, astreoidsNotUsed, spawnAstreoid);
+            stateManager.handleState(player, keystates);
+            break;
+    }
+}
+
+void Engine::updateGameScene(std::unordered_map<InputHandler::Keys, bool>& keystates, 
+                            Player& player,
+                            std::list<Bullet>& bulletsUsed,
+                            std::list<Bullet>& bulletsNotUsed,
+                            std::list<Astreoid>& astreoidsUsed,
+                            std::list<Astreoid>& astreoidsNotUsed,
+                            bool spawnAstreoid,
+                            SDL_Renderer* renderer) {
+
         updatePlayerPosition(keystates, player);
 
         handleShooting(keystates, player, bulletsUsed, bulletsNotUsed);
@@ -26,14 +51,31 @@ void Engine::updateGamestate(std::unordered_map<InputHandler::Keys, bool>& keyst
 
         handleAstreoidPlayerCollision(player, astreoidsUsed, astreoidsNotUsed);
 
+        stateManager.handleState(player, keystates);
+
         //spawn astreoids after everything else?
         if (spawnAstreoid) {
             spawnAstreoidRandomly(astreoidsUsed, astreoidsNotUsed, renderer);
         }
+}
 
-    }
+void Engine::restartGameState(Player& player,
+                            std::list<Bullet>& bulletsUsed,
+                            std::list<Bullet>& bulletsNotUsed,
+                            std::list<Astreoid>& astreoidsUsed,
+                            std::list<Astreoid>& astreoidsNotUsed,
+                            bool spawnAstreoid) {
 
-
+    player.setHealth(3);
+    player.setScore(0);
+    player.entityRect.x = 150;
+    player.entityRect.y = 150;
+    bulletsUsed.clear();
+    bulletsNotUsed.clear();
+    astreoidsUsed.clear();
+    astreoidsNotUsed.clear();
+    spawnAstreoid = false;
+}
 // Generate a random float between min and max
 float Engine::randomFloat(float min, float max) {
     return min + static_cast<float>(rand()) / (static_cast<float>(RAND_MAX / (max - min)));
@@ -391,10 +433,6 @@ void Engine::handleAstreoidPlayerCollision(Player& player, std::list<Astreoid>& 
 
     for (auto aIt : astreoidsToRemove) {
         astreoidsNotUsed.splice(astreoidsNotUsed.end(), astreoidsUsed, aIt);
-    }
-
-    if (player.getHealth() <= 0) {
-        stateManager.changeState(GameState::End);
     }
 }
 

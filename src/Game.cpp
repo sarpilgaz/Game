@@ -33,7 +33,7 @@ bool Game::init() {
     SDL_FreeSurface(tmpSurface);
 
     running = true;
-    stateManager.changeState(GameState::Start);
+    stateManager.changeState(GameState::Menu);
     return true;
 }
 

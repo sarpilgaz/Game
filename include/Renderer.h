@@ -23,7 +23,8 @@ private:
     void prepareRender();
     void renderGame(const Player& player, std::list<Bullet>& activeBullets, std::list<Astreoid>& astreoids);
     void renderText(const char* text, int xPos, int yPos);
-    void renderGameOver();
+    void renderGameOver(const Player& player);
+    void renderMenu();
 };
 
 #endif

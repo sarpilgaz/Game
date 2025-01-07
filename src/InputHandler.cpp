@@ -29,3 +29,11 @@ void InputHandler::handleEvents(bool& running, std::unordered_map<Keys, bool>& k
         }
     }
 }
+void InputHandler::resetKeys(std::unordered_map<Keys, bool>& keystates) {
+    keystates[UP] = false;
+    keystates[LEFT] = false;
+    keystates[DOWN] = false;
+    keystates[RIGHT] = false;
+    keystates[A] = false;
+    keystates[U] = false;
+}

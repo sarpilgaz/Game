@@ -9,11 +9,14 @@ void Renderer::setRenderer(SDL_Renderer* renderer) {
 
 void Renderer::render(const Player& player, std::list<Bullet>& activeBullets, std::list<Astreoid>& astreoids) {
     switch(stateManager.getState()) {
+        case GameState::Menu:
+            renderMenu();
+            break;
         case GameState::Start:
-            this->renderGame(player, activeBullets, astreoids);
+            renderGame(player, activeBullets, astreoids);
             break;
         case GameState::End:
-            this->renderGameOver();
+            renderGameOver(player);
             break;
     }
 }
@@ -62,7 +65,12 @@ void Renderer::renderText(const char* text, int xPos, int yPos) {
     TTF_CloseFont(sans);
 }
 
-
+void Renderer::renderMenu() {
+    prepareRender();
+    std::string msg_str = "Press A to start";
+    renderText(msg_str.c_str(), 300, 200);
+    SDL_RenderPresent(renderer);
+}
 void Renderer::renderGame(const Player& player, std::list<Bullet>& activeBullets, std::list<Astreoid>& astreoids) {
     prepareRender();
 
@@ -92,9 +100,12 @@ void Renderer::renderGame(const Player& player, std::list<Bullet>& activeBullets
     SDL_RenderPresent(renderer);
 }
 
-void Renderer::renderGameOver() {
+void Renderer::renderGameOver(const Player& player) {
     prepareRender();
     std::string msg_str = "Game Over!";
     renderText(msg_str.c_str(), 300, 200);
+    std::string scoreStr = std::to_string(player.getScore());
+    std::string scoreMsg = "Score: " + scoreStr;
+    renderText(scoreMsg.c_str(), 300, 250);
     SDL_RenderPresent(renderer);
 }

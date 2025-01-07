@@ -16,7 +16,6 @@ public:
     };
     void handleEvents(bool& running, std::unordered_map<Keys, bool>& keystates);
 
-    void resetKeys(std::unordered_map<Keys, bool>& keystates);
 
 private:
     SDL_Event event;

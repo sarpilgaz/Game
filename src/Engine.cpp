@@ -343,7 +343,7 @@ bool Engine::checkCircTriangleCollision(const Entity& circleEntity, const Entity
         );
 
         if (distSq < radius * radius) {
-            return true; // Edge intersects the circle
+            return true;
         }
     }
 

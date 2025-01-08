@@ -33,7 +33,7 @@ void Renderer::renderText(const char* text, int xPos, int yPos) {
     }
 
     // Load font
-    TTF_Font* sans = TTF_OpenFont("/home/sarpilgaz/Desktop/projects/Game/fonts/sans.ttf", 24);
+    TTF_Font* sans = TTF_OpenFont("fonts/sans.ttf", 24);
     if (!sans) {
         return;
     }

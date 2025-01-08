@@ -69,3 +69,6 @@ file(
     COPY ${CMAKE_SOURCE_DIR}/assets
     DESTINATION ${OUTPUT_DIR}
 )
+file (COPY ${CMAKE_SOURCE_DIR}/fonts
+      DESTINATION ${OUTPUT_DIR}
+)

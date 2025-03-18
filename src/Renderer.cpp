@@ -28,10 +28,6 @@ void Renderer::prepareRender() {
 
 void Renderer::renderText(const char* text, int xPos, int yPos) {
     // Initialize TTF if not already done
-    if (TTF_Init() == -1) {
-        return;
-    }
-
     // Load font
     TTF_Font* sans = TTF_OpenFont("fonts/sans.ttf", 24);
     if (!sans) {
@@ -95,7 +91,7 @@ void Renderer::renderGame(const Player& player, std::list<Bullet>& activeBullets
     std::string scoreStr = std::to_string(player.getScore());
     std::string scoreText = "Score: " + scoreStr;
 
-    renderText(scoreText.c_str(), 700, 0);
+    renderText(scoreText.c_str(), 680, 0);
 
     SDL_RenderPresent(renderer);
 }
